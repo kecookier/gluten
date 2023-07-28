@@ -256,6 +256,21 @@ macro(find_re2)
   endif()
 endmacro()
 
+macro(find_isal)
+  find_package(isal CONFIG)
+  if(isal_FOUND AND TARGET isal::isal)
+    set(ISAL_LIBRARY isal::isal)
+  else()
+    find_library(ISAL_LIBRARY NAMES isal PATHS ${SYSTEM_LIB_PATH} ${SYSTEM_LIB64_PATH} ${SYSTEM_LIB_MULTIARCH_PATH} ${SYSTEM_LOCAL_LIB_PATH} ${SYSTEM_LOCAL_LIB64_PATH} NO_DEFAULT_PATH)
+  endif()
+
+  if (NOT ISAL_LIBRARY)
+     message(FATAL_ERROR "ISAL Library Not Found")
+  else()
+    message(STATUS "ISAL Library Can Be Found in ${ISAL_LIBRARY}")
+  endif()
+endmacro()
+
 macro(find_awssdk)
   set (CMAKE_FIND_LIBRARY_SUFFIXES ".a")
   find_package(AWSSDK REQUIRED COMPONENTS s3;identity-management)
@@ -265,6 +280,7 @@ macro(find_gcssdk)
   set (CMAKE_FIND_LIBRARY_SUFFIXES ".so")
   find_package(google_cloud_cpp_storage REQUIRED)
 endmacro()
+
 
 
 
@@ -349,6 +365,9 @@ target_link_libraries(velox PUBLIC Arrow::arrow Arrow::parquet)
 target_link_libraries(velox PUBLIC Folly::folly)
 find_re2()
 target_link_libraries(velox PUBLIC ${RE2_LIBRARY})
+
+find_isal()
+target_link_libraries(velox PUBLIC ${ISAL_LIBRARY})
 
 if(ENABLE_GLUTEN_VCPKG)
   find_package(Thrift CONFIG)

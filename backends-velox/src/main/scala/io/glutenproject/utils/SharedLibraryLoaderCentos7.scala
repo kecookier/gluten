@@ -39,6 +39,7 @@ class SharedLibraryLoaderCentos7 extends SharedLibraryLoader {
       .loadAndCreateLink("libre2.so.10", "libre2.so", false)
       .loadAndCreateLink("libzstd.so.1", "libzstd.so", false)
       .loadAndCreateLink("liblz4.so.1", "liblz4.so", false)
+      .loadAndCreateLink("libisal.so.2", "libisal.so", false)
       .commit()
   }
 }
