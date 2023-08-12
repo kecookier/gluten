@@ -366,8 +366,11 @@ target_link_libraries(velox PUBLIC Folly::folly)
 find_re2()
 target_link_libraries(velox PUBLIC ${RE2_LIBRARY})
 
-find_isal()
-target_link_libraries(velox PUBLIC ${ISAL_LIBRARY})
+if(ENABLE_ISAL)
+  add_definitions(-DENABLE_ISAL)
+  find_isal()
+  target_link_libraries(velox PUBLIC ${ISAL_LIBRARY})
+endif()
 
 if(ENABLE_GLUTEN_VCPKG)
   find_package(Thrift CONFIG)
