@@ -28,6 +28,7 @@ ENABLE_EP_CACHE=OFF
 ENABLE_BENCHMARK=OFF
 ENABLE_TESTS=OFF
 RUN_SETUP_SCRIPT=ON
+VELOX_DEPENDENCY_SOURCE=AUTO
 
 OS=`uname -s`
 ARCH=`uname -m`
@@ -74,6 +75,10 @@ for arg in "$@"; do
     RUN_SETUP_SCRIPT=("${arg#*=}")
     shift # Remove argument name from processing
     ;;
+  --velox_dependency_source=*)
+    VELOX_DEPENDENCY_SOURCE=("${arg#*=}")
+    shift # Remove argument name from processing
+    ;;
   *)
     OTHER_ARGUMENTS+=("$1")
     shift # Remove generic argument from processing
@@ -84,8 +89,8 @@ done
 function apply_compilation_fixes {
   current_dir=$1
   velox_home=$2
-  sudo cp ${current_dir}/modify_velox.patch ${velox_home}/
-  sudo cp ${current_dir}/modify_arrow.patch ${velox_home}/third_party/
+  cp ${current_dir}/modify_velox.patch ${velox_home}/
+  cp ${current_dir}/modify_arrow.patch ${velox_home}/third_party/
   cd ${velox_home}
   git apply modify_velox.patch
   if [ $? -ne 0 ]; then
@@ -131,6 +136,9 @@ function compile {
     COMPILE_OPTION="$COMPILE_OPTION -DVELOX_ENABLE_GCS=ON"
   fi
 
+  # set dependency_sourc=AUTO/SYTEM/BUNDLE
+  COMPILE_OPTION="$COMPILE_OPTION -DVELOX_DEPENDENCY_SOURCE=${VELOX_DEPENDENCY_SOURCE}"
+
   COMPILE_OPTION="$COMPILE_OPTION -DCMAKE_BUILD_TYPE=${BUILD_TYPE}"
   COMPILE_TYPE=$(if [[ "$BUILD_TYPE" == "debug" ]] || [[ "$BUILD_TYPE" == "Debug" ]]; then echo 'debug'; else echo 'release'; fi)
   echo "COMPILE_OPTION: "$COMPILE_OPTION
@@ -147,25 +155,25 @@ function compile {
   fi
 
   # Install deps to system as needed
-  if [ -d "_build/$COMPILE_TYPE/_deps" ]; then
-    cd _build/$COMPILE_TYPE/_deps
-    if [ -d xsimd-build ]; then
-      echo "INSTALL xsimd."
-      if [ $OS == 'Linux' ]; then
-        sudo cmake --install xsimd-build/
-      elif [ $OS == 'Darwin' ]; then
-        cmake --install xsimd-build/
-      fi
-    fi
-    if [ -d gtest-build ]; then
-      echo "INSTALL gtest."
-      if [ $OS == 'Linux' ]; then
-        sudo cmake --install gtest-build/
-      elif [ $OS == 'Darwin' ]; then
-        cmake --install gtest-build/
-      fi
-    fi
-  fi
+  # if [ -d "_build/$COMPILE_TYPE/_deps" ]; then
+  #   cd _build/$COMPILE_TYPE/_deps
+  #   if [ -d xsimd-build ]; then
+  #     echo "INSTALL xsimd."
+  #     if [ $OS == 'Linux' ]; then
+  #       sudo cmake --install xsimd-build/
+  #     elif [ $OS == 'Darwin' ]; then
+  #       cmake --install xsimd-build/
+  #     fi
+  #   fi
+  #   if [ -d gtest-build ]; then
+  #     echo "INSTALL gtest."
+  #     if [ $OS == 'Linux' ]; then
+  #       sudo cmake --install gtest-build/
+  #     elif [ $OS == 'Darwin' ]; then
+  #       cmake --install gtest-build/
+  #     fi
+  #   fi
+  # fi
 }
 
 function check_commit {

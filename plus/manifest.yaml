@@ -1,0 +1,27 @@
+version: v1
+build:
+  os: centos7-plus
+  tools:
+    plus-private-key:
+    java-1.8.0-openjdk:
+    java-1.8.0-openjdk-devel:
+  deps:
+    - patch:
+    - spark_gluten_velox_deps:
+    - maven: 3.6.3
+  run:
+    workDir: ./
+    cmd:
+      - gcc --version
+      - sh plus/plus_build.sh --enable_hdfs=ON --run_setup_script=OFF --enable_ep_cache=ON
+  target:
+    distDir: ./package/target
+    files:
+      - ./gluten-package*SNAPSHOT.jar
+      - ../../plus/run.sh
+deploy:
+  targetDir: /opt/meituan/gluten/
+  run:
+    workDir: ./
+    cmd:
+      - sh plus/run.sh 
