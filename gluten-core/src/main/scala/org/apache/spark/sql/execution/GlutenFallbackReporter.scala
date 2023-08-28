@@ -22,12 +22,14 @@ import io.glutenproject.extension.GlutenPlan
 import io.glutenproject.extension.columnar.{TRANSFORM_UNSUPPORTED, TransformHints}
 import io.glutenproject.utils.LogLevelUtil
 
+import org.apache.spark.SparkEnv
 import org.apache.spark.sql.SparkSession
 import org.apache.spark.sql.catalyst.rules.Rule
 import org.apache.spark.sql.catalyst.trees.TreeNodeTag
 import org.apache.spark.sql.catalyst.util.StringUtils.PlanStringConcat
 import org.apache.spark.sql.execution.GlutenFallbackReporter.FALLBACK_REASON_TAG
 import org.apache.spark.sql.execution.ui.GlutenEventUtils
+import org.apache.spark.util.{JsonProtocol, Utils}
 
 /**
  * This rule is used to collect all fallback reason.
@@ -67,6 +69,21 @@ case class GlutenFallbackReporter(glutenConfig: GlutenConfig, spark: SparkSessio
                 // Then we can be aware of the fallback reason for the whole plan.
                 plan.logicalLink.foreach {
                   logicalPlan => logicalPlan.setTagValue(FALLBACK_REASON_TAG, reason.getOrElse(""))
+                }
+
+                if (glutenConfig.collectFallbackReason) {
+                  val appId = SparkEnv.get.conf.get("spark.app.id")
+                  val containerId = SparkEnv.get.conf.getenv("CONTAINER_ID")
+                  val info: Map[String, String] =
+                    Map("plan" -> plan.nodeName, "reason" -> reason.getOrElse(""))
+                  val jsonStr = JsonProtocol.Json2String(JsonProtocol.mapToJson(info))
+                  logInfo(s"appId=$appId, containerId=$containerId, jsonStr=$jsonStr")
+                  Utils.reportMetricsToKafka(
+                    appId,
+                    containerId,
+                    "driver",
+                    "gluten_fallback",
+                    jsonStr)
                 }
               case _ =>
             }

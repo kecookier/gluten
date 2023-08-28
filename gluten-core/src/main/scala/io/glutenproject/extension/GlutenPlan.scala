@@ -26,11 +26,16 @@ import io.glutenproject.test.TestStats
 import io.glutenproject.utils.LogLevelUtil
 import io.glutenproject.validate.NativePlanValidationInfo
 
+import org.apache.spark.SparkEnv
+import org.apache.spark.metrics.sink.MtKafkaSink
 import org.apache.spark.sql.execution.SparkPlan
 
 import com.google.common.collect.Lists
+import org.json4s.JsonAST.{JField, JObject, JString, JValue}
+import org.json4s.jackson.JsonMethods.{compact, render}
 
 import scala.collection.JavaConverters._
+import scala.collection.Map
 
 case class ValidationResult(isValid: Boolean, reason: Option[String])
 
@@ -71,6 +76,13 @@ trait GlutenPlan extends SparkPlan with LogLevelUtil {
     } catch {
       case e: Exception =>
         // FIXME: Use a validation-specific method to catch validation failures
+        if (glutenConf.collectFallbackReason) {
+          val appId = SparkEnv.get.conf.get("spark.app.id")
+          val info: Map[String, String] = Map("plan" -> nodeName, "reason" -> e.toString)
+          val jsonStr = Json2String(mapToJson(info))
+          logInfo(s"appId=$appId, jsonStr=$jsonStr")
+          reportMetricsToKafka(appId, "", "driver", "gluten_validate", jsonStr)
+        }
         TestStats.addFallBackClassName(this.getClass.toString)
         logValidationMessage(s"Validation failed with exception for plan: $nodeName, due to:", e)
         ValidationResult.notOk(e.getMessage)
@@ -98,5 +110,41 @@ trait GlutenPlan extends SparkPlan with LogLevelUtil {
     } else {
       logOnLevel(validationLogLevel, msg)
     }
+  }
+
+  def mapFormatXMDTString(obj: Map[String, String]): String = {
+    val sb = new StringBuilder
+    sb.append("#XMDT#{")
+    for ((k, v) <- obj) {
+      sb.append(k + "=" + v + " ")
+    }
+    sb.append("}#XMDT#")
+    sb.mkString
+  }
+
+  /** Report metrics to kafka */
+  def reportMetricsToKafka(
+      applicationId: String,
+      containerId: String,
+      role: String,
+      metricsType: String,
+      metricsInfo: String): Unit = {
+    val info: Map[String, String] = Map(
+      "application_id" -> applicationId,
+      "container_id" -> containerId,
+      "role" -> role,
+      "metrics_type" -> metricsType,
+      "metrics_info" -> metricsInfo)
+    val msg = mapFormatXMDTString(info)
+    MtKafkaSink.reportEvent(msg)
+  }
+
+  def Json2String(obj: JValue): String = {
+    compact(render(obj))
+  }
+
+  def mapToJson(m: Map[String, String]): JValue = {
+    val jsonFields = m.map { case (k, v) => JField(k, JString(v)) }
+    JObject(jsonFields.toList)
   }
 }

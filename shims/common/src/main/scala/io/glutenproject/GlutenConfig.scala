@@ -264,6 +264,8 @@ class GlutenConfig(conf: SQLConf) extends Logging {
 
   def enableFallbackReport: Boolean = conf.getConf(FALLBACK_REPORTER_ENABLED)
 
+  def collectFallbackReason: Boolean = conf.getConf(COLLECT_FALLBACK_REASON)
+
   def enableVeloxUserExceptionStacktrace: Boolean =
     conf.getConf(COLUMNAR_VELOX_ENABLE_USER_EXCEPTION_STACKTRACE)
 
@@ -1238,6 +1240,12 @@ object GlutenConfig {
       .doc("When true, enable fallback reporter rule to print fallback reason")
       .booleanConf
       .createWithDefault(true)
+
+  val COLLECT_FALLBACK_REASON =
+    buildConf("spark.gluten.sql.columnar.collectFallbackReason")
+      .doc("When true, send fallback reason to kafka")
+      .booleanConf
+      .createWithDefault(false)
 
   val COLUMNAR_VELOX_ENABLE_USER_EXCEPTION_STACKTRACE =
     buildConf("spark.gluten.sql.columnar.backend.velox.enableUserExceptionStacktrace")
