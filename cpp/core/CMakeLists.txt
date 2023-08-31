@@ -26,7 +26,7 @@ set(CMAKE_CXX_STANDARD 17)
 
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -march=native")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mavx2 -mfma -mavx -mf16c -mlzcnt -std=c++17 -mbmi2 -mbmi")
 
 set(BOOST_MIN_VERSION "1.42.0")
 find_package(Boost REQUIRED)
