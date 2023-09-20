@@ -13,7 +13,7 @@ build:
     workDir: ./
     cmd:
       - gcc --version
-      - sh plus/plus_build.sh --enable_hdfs=ON --run_setup_script=OFF --enable_ep_cache=ON
+      - sh plus/plus_build.sh --enable_hdfs=ON --run_setup_script=OFF --enable_ep_cache=ON --enable_isal=ON
   target:
     distDir: ./package/target
     files:
