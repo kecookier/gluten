@@ -120,6 +120,7 @@ function compile {
   fi
   if [ $ENABLE_ISAL == "ON" ]; then
     COMPILE_OPTION="$COMPILE_OPTION -DVELOX_ENABLE_ISAL=ON"
+    install_isal
   else
     COMPILE_OPTION="$COMPILE_OPTION -DVELOX_ENABLE_ISAL=OFF"
   fi
@@ -247,6 +248,16 @@ function setup_linux {
     echo "Unsupport linux distribution: $LINUX_DISTRIBUTION"
     exit 1
   fi
+}
+
+function install_isal {
+  ISAL_LIB_PATH=${VELOX_HOME}/third_party/isa-l/lib
+  cd ${ISAL_LIB_PATH}
+  if [ ! -L "libisal.so" ]; then
+    ln -s libisal.so.2 libisal.so
+    echo "link libisal.so"
+  fi
+  cd -
 }
 
 CURRENT_DIR=$(

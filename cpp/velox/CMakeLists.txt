@@ -257,11 +257,12 @@ macro(find_re2)
 endmacro()
 
 macro(find_isal)
+  set(VELOX_ISAL_LIB_PATH "${VELOX_HOME}/third_party/isa-l/lib" CACHE PATH "isal Lib dir")
   find_package(isal CONFIG)
   if(isal_FOUND AND TARGET isal::isal)
     set(ISAL_LIBRARY isal::isal)
   else()
-    find_library(ISAL_LIBRARY NAMES isal PATHS ${SYSTEM_LIB_PATH} ${SYSTEM_LIB64_PATH} ${SYSTEM_LIB_MULTIARCH_PATH} ${SYSTEM_LOCAL_LIB_PATH} ${SYSTEM_LOCAL_LIB64_PATH} NO_DEFAULT_PATH)
+    find_library(ISAL_LIBRARY NAMES isal PATHS ${VELOX_ISAL_LIB_PATH} ${SYSTEM_LIB_PATH} ${SYSTEM_LIB64_PATH} ${SYSTEM_LIB_MULTIARCH_PATH} ${SYSTEM_LOCAL_LIB_PATH} ${SYSTEM_LOCAL_LIB64_PATH} NO_DEFAULT_PATH)
   endif()
 
   if (NOT ISAL_LIBRARY)

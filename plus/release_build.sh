@@ -27,7 +27,7 @@ do
     esac
 done
 
-${GLUTEN_DIR}/dev/builddeps-veloxbe.sh --enable_hdfs=ON --enable_isal=OFF --build_type=Release --run_setup_script=OFF
+${GLUTEN_DIR}/dev/builddeps-veloxbe.sh --enable_hdfs=ON --enable_isal=ON --build_type=Release --run_setup_script=OFF
 
 if [ $PACK == 'true' ]; then
     cd ${GLUTEN_DIR}
