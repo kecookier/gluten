@@ -20,7 +20,7 @@ build:
       - ./gluten-package*SNAPSHOT.jar
       - ../../plus/run.sh
 deploy:
-  targetDir: /opt/meituan/gluten/
+  targetDir: /opt/meituan/gluten-1.1.0/
   run:
     workDir: ./
     cmd:
