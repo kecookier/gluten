@@ -802,6 +802,8 @@ core::PlanNodePtr SubstraitToVeloxPlanConverter::toVeloxPlan(const ::substrait::
     isPartitionColumns = SubstraitParser::parsePartitionColumns(baseSchema);
   }
 
+  std::vector<std::string> tableColNames;
+  std::vector<TypePtr> tableVeloxTypeList;
   // Parse local files and construct split info.
   if (readRel.has_local_files()) {
     using SubstraitFileFormatCase = ::substrait::ReadRel_LocalFiles_FileOrFiles::FileFormatCase;
@@ -819,6 +821,16 @@ core::PlanNodePtr SubstraitToVeloxPlanConverter::toVeloxPlan(const ::substrait::
         partitionColumnMap[partitionColumn.key()] = partitionColumn.value();
       }
       splitInfo->partitionColumns.emplace_back(partitionColumnMap);
+
+      if (tableColNames.empty() && file.has_schema()) {
+        const auto& tableSchema = file.schema();
+        tableColNames.reserve(tableSchema.names().size());
+        for (const auto& name : tableSchema.names()) {
+          tableColNames.emplace_back(name);
+        }
+
+        tableVeloxTypeList = SubstraitParser::parseNamedStruct(tableSchema);
+      }
 
       splitInfo->paths.emplace_back(file.uri_file());
       splitInfo->starts.emplace_back(file.start());
@@ -844,6 +856,9 @@ core::PlanNodePtr SubstraitToVeloxPlanConverter::toVeloxPlan(const ::substrait::
       fileFormat_ = splitInfo->format;
     }
   }
+
+  auto tableSchema = ROW(std::move(tableColNames), std::move(tableVeloxTypeList));
+
   // Do not hard-code connector ID and allow for connectors other than Hive.
   static const std::string kHiveConnectorId = "test-hive";
 
@@ -852,7 +867,12 @@ core::PlanNodePtr SubstraitToVeloxPlanConverter::toVeloxPlan(const ::substrait::
   std::shared_ptr<connector::hive::HiveTableHandle> tableHandle;
   if (!readRel.has_filter()) {
     tableHandle = std::make_shared<connector::hive::HiveTableHandle>(
-        kHiveConnectorId, "hive_table", filterPushdownEnabled, connector::hive::SubfieldFilters{}, nullptr);
+        kHiveConnectorId,
+        "hive_table",
+        filterPushdownEnabled,
+        connector::hive::SubfieldFilters{},
+        nullptr,
+        tableSchema);
   } else {
     // Flatten the conditions connected with 'and'.
     std::vector<::substrait::Expression_ScalarFunction> scalarFunctions;
@@ -894,9 +914,13 @@ core::PlanNodePtr SubstraitToVeloxPlanConverter::toVeloxPlan(const ::substrait::
     } else {
       remainingFilter = connectWithAnd(colNameList, veloxTypeList, remainingFunctions, remainingrOrLists, ifThens);
     }
-
     tableHandle = std::make_shared<connector::hive::HiveTableHandle>(
-        kHiveConnectorId, "hive_table", filterPushdownEnabled, std::move(subfieldFilters), remainingFilter);
+        kHiveConnectorId,
+        "hive_table",
+        filterPushdownEnabled,
+        std::move(subfieldFilters),
+        remainingFilter,
+        tableSchema);
   }
 
   // Get assignments and out names.
