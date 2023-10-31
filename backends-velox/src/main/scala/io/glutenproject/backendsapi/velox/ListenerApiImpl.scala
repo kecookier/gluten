@@ -107,6 +107,10 @@ class ListenerApiImpl extends ListenerApi {
         s"libparquet.so.$ARROW_VERSION.1.0",
         s"libparquet.so.$ARROW_VERSION",
         false)
+      .loadAndCreateLink("libgsasl.so.7", "libgsasl.so.7", false)
+      .loadAndCreateLink("libntlm.so.0", "libntlm.so.0", false)
+      .loadAndCreateLink("libntlm.so.0.1", "libntlm.so.0.1", false)
+      .loadAndCreateLink("libhdfs3.so.2.2.30", "libhdfs3.so.1", false)
       .commit()
   }
 

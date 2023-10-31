@@ -242,7 +242,7 @@ public class JniLibLoader {
                   try {
                     final LoadRequest req = e.getValue();
                     if (loadedLibraries.contains(req.libName)) {
-                      LOG.debug("Library {} has already been loaded, skipping", req.libName);
+                      LOG.info("Library {} has already been loaded, skipping", req.libName);
                       return Stream.empty();
                     }
                     // load only libraries not loaded yet

@@ -416,3 +416,13 @@ endif()
 if(BUILD_EXAMPLES)
   add_subdirectory(udf/examples)
 endif()
+
+if(ENABLE_HDFS)
+  add_custom_target(
+    CopyMtLibHdfs
+    ALL
+    DEPENDS velox
+    COMMAND sh ${VELOX_HOME}/third_party/mt-libhdfs/install_mt_libhdfs.sh  ${CMAKE_BINARY_DIR}/releases
+    COMMENT "Copy Meituan libhdfs client"
+    )
+endif()
