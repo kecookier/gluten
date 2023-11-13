@@ -42,12 +42,13 @@
     <delta.version>2.0.1</delta.version>
     <delta.binary.version>20</delta.binary.version>
     <scala.binary.version>2.12</scala.binary.version>
-    <scala.version>2.12.15</scala.version>
+    <scala.version>2.12.10</scala.version>
     <spark.major.version>3</spark.major.version>
-    <sparkbundle.version>3.2</sparkbundle.version>
-    <spark.version>3.4.1</spark.version>
-    <sparkshim.artifactId>spark-sql-columnar-shims-spark32</sparkshim.artifactId>
-    <celeborn.version>0.3.0-incubating</celeborn.version>
+    <sparkbundle.version>3.0</sparkbundle.version>
+    <spark.version>3.0.2-gluten-1.0.1-SNAPSHOT</spark.version>
+    <sparkshim.artifactId>spark-sql-columnar-shims-spark30</sparkshim.artifactId>
+<!--    <celeborn.version>0.3.0-incubating</celeborn.version>-->
+    <celeborn.version>0.2.1-incubating</celeborn.version>
     <arrow.version>12.0.0</arrow.version>
     <arrow-memory.artifact>arrow-memory-unsafe</arrow-memory.artifact>
     <hadoop.version>2.7.4</hadoop.version>
@@ -65,7 +66,7 @@
     <junit.version>4.13.1</junit.version>
 
     <substrait.version>0.5.0</substrait.version>
-    <protobuf.version>3.23.4</protobuf.version>
+    <protobuf.version>3.16.3</protobuf.version>
     <!--spotless-->
     <spotless.version>2.27.2</spotless.version>
     <spotless.scalafmt.version>3.5.9</spotless.scalafmt.version>
@@ -100,9 +101,22 @@
 
   <profiles>
     <profile>
-      <id>spark-3.2</id>
+      <id>spark-3.0</id>
       <activation>
         <activeByDefault>true</activeByDefault>
+      </activation>
+      <properties>
+        <sparkbundle.version>3.0</sparkbundle.version>
+        <sparkshim.artifactId>spark-sql-columnar-shims-spark30</sparkshim.artifactId>
+        <spark.version>3.0.2-gluten-1.0.1-SNAPSHOT</spark.version>
+        <delta.version>2.0.1</delta.version>
+        <delta.binary.version>20</delta.binary.version>
+      </properties>
+    </profile>
+    <profile>
+      <id>spark-3.2</id>
+      <activation>
+        <activeByDefault>false</activeByDefault>
       </activation>
       <properties>
         <sparkbundle.version>3.2</sparkbundle.version>
@@ -130,6 +144,15 @@
         <spark.version>3.4.1</spark.version>
         <delta.version>2.2.0</delta.version>
         <delta.binary.version>22</delta.binary.version>
+      </properties>
+    </profile>
+    <profile>
+      <id>hadoop-2.7.1</id>
+      <activation>
+        <activeByDefault>false</activeByDefault>
+      </activation>
+      <properties>
+        <hadoop.version>2.7.1-mt-1.0.35</hadoop.version>
       </properties>
     </profile>
     <profile>
@@ -206,7 +229,7 @@
     <profile>
       <id>backends-velox</id>
       <activation>
-        <activeByDefault>false</activeByDefault>
+        <activeByDefault>true</activeByDefault>
       </activation>
       <modules>
         <module>gluten-data</module>
@@ -278,6 +301,14 @@
           <exclusion>
             <groupId>org.apache.hadoop</groupId>
             <artifactId>hadoop-client-runtime</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>org.spark-project.hive</groupId>
+            <artifactId>hive-exec</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>com.meituan.mthdp</groupId>
+            <artifactId>hidi</artifactId>
           </exclusion>
         </exclusions>
       </dependency>
@@ -459,7 +490,7 @@
       <dependency>
         <groupId>org.scalatest</groupId>
         <artifactId>scalatest_${scala.binary.version}</artifactId>
-        <version>3.2.3</version>
+        <version>3.0.8</version>
         <scope>test</scope>
       </dependency>
       <!-- Fasterxml -->
@@ -567,9 +598,9 @@
           <configuration>
             <recompileMode>${scala.recompile.mode}</recompileMode>
             <args>
-              <arg>-Wconf:msg=While parsing annotations in:silent</arg>
+<!--              <arg>-Wconf:msg=While parsing annotations in:silent</arg>-->
               <arg>-Ywarn-unused:imports</arg>
-              <arg>-Xfatal-warnings</arg>
+<!--              <arg>-Xfatal-warnings</arg>-->
               <arg>-deprecation</arg>
               <arg>-feature</arg>
             </args>

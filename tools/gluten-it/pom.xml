@@ -17,6 +17,7 @@
     <maven.compiler.source>8</maven.compiler.source>
     <maven.compiler.target>8</maven.compiler.target>
     <scala.library.version>2.12.15</scala.library.version>
+    <spark30.version>3.0.2-gluten-1.0.0-SNAPSHOT</spark30.version>
     <spark32.version>3.2.2</spark32.version>
     <spark33.version>3.3.1</spark33.version>
     <spark34.version>3.4.1</spark34.version>
@@ -98,6 +99,31 @@
   </dependencyManagement>
 
   <profiles>
+    <profile>
+      <id>spark-3.0</id>
+      <properties>
+        <spark.version>${spark30.version}</spark.version>
+      </properties>
+      <dependencies>
+        <dependency>
+          <groupId>org.apache.spark</groupId>
+          <artifactId>spark-sql_${scala.binary.version}</artifactId>
+          <version>${spark.version}</version>
+          <exclusions>
+            <exclusion>
+              <groupId>com.google.protobuf</groupId>
+              <artifactId>protobuf-java</artifactId>
+            </exclusion>
+          </exclusions>
+        </dependency>
+        <dependency>
+          <groupId>org.apache.spark</groupId>
+          <artifactId>spark-sql_${scala.binary.version}</artifactId>
+          <version>${spark.version}</version>
+          <type>test-jar</type>
+        </dependency>
+      </dependencies>
+    </profile>
     <profile>
       <id>spark-3.2</id>
       <activation>

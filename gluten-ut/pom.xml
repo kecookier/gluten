@@ -182,6 +182,12 @@
 
   <profiles>
     <profile>
+      <id>spark-3.0</id>
+      <modules>
+        <module>spark30</module>
+      </modules>
+    </profile>
+    <profile>
       <id>spark-3.2</id>
       <modules>
         <module>spark32</module>
