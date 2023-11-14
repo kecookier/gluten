@@ -24,7 +24,7 @@ import org.apache.spark.sql.catalyst.plans.QueryPlan
 import org.apache.spark.sql.catalyst.plans.logical.{CommandResult, LogicalPlan}
 import org.apache.spark.sql.catalyst.util.StringUtils.PlanStringConcat
 import org.apache.spark.sql.execution.GlutenExplainUtils._
-import org.apache.spark.sql.execution.adaptive.{AdaptiveSparkPlanExec, AQEShuffleReadExec, QueryStageExec}
+import org.apache.spark.sql.execution.adaptive.{AdaptiveSparkPlanExec, CustomShuffleReaderExec, QueryStageExec}
 import org.apache.spark.sql.execution.columnar.InMemoryTableScanExec
 import org.apache.spark.sql.execution.command.{DataWritingCommandExec, ExecutedCommandExec}
 import org.apache.spark.sql.execution.datasources.v2.V2CommandExec
@@ -141,7 +141,7 @@ object GlutenImplicits {
               addFallbackNodeWithReason(i, "Columnar table cache is disabled", fallbackNodeToReason)
             }
             collect(i.relation.cachedPlan)
-          case _: AQEShuffleReadExec => // Ignore
+          case _: CustomShuffleReaderExec => // Ignore
           case p: SparkPlan =>
             handleVanillaSparkPlan(p, fallbackNodeToReason)
             p.innerChildren.foreach(collect)

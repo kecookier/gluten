@@ -25,7 +25,7 @@ import org.apache.spark.sql.catalyst.InternalRow
 import org.apache.spark.sql.catalyst.expressions.Attribute
 import org.apache.spark.sql.catalyst.rules.Rule
 import org.apache.spark.sql.execution.{ColumnarBroadcastExchangeExec, ColumnarToRowExec, CommandResultExec, LeafExecNode, SparkPlan, UnaryExecNode}
-import org.apache.spark.sql.execution.adaptive.{AdaptiveSparkPlanExec, AQEShuffleReadExec, BroadcastQueryStageExec, QueryStageExec, ShuffleQueryStageExec}
+import org.apache.spark.sql.execution.adaptive.{AdaptiveSparkPlanExec, CustomShuffleReaderExec, BroadcastQueryStageExec, QueryStageExec, ShuffleQueryStageExec}
 import org.apache.spark.sql.execution.columnar.InMemoryTableScanExec
 import org.apache.spark.sql.execution.command.ExecutedCommandExec
 import org.apache.spark.sql.execution.exchange.Exchange
@@ -232,7 +232,7 @@ case class ExpandFallbackPolicy(isAdaptiveContext: Boolean, originalPlan: SparkP
     planWithColumnarToRow.transform {
       case c2r @ ColumnarToRowExec(_: ShuffleQueryStageExec) =>
         transformPostOverrides.transformColumnarToRowExec(c2r)
-      case c2r @ ColumnarToRowExec(_: AQEShuffleReadExec) =>
+      case c2r @ ColumnarToRowExec(_: CustomShuffleReaderExec) =>
         transformPostOverrides.transformColumnarToRowExec(c2r)
       // `InMemoryTableScanExec` itself supports columnar to row
       case ColumnarToRowExec(child: SparkPlan)

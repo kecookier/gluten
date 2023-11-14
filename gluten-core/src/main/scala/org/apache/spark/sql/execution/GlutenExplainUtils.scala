@@ -23,7 +23,7 @@ import org.apache.spark.sql.AnalysisException
 import org.apache.spark.sql.catalyst.expressions.{Expression, PlanExpression}
 import org.apache.spark.sql.catalyst.plans.QueryPlan
 import org.apache.spark.sql.execution.GlutenFallbackReporter.FALLBACK_REASON_TAG
-import org.apache.spark.sql.execution.adaptive.{AdaptiveSparkPlanExec, AdaptiveSparkPlanHelper, AQEShuffleReadExec, QueryStageExec}
+import org.apache.spark.sql.execution.adaptive.{AdaptiveSparkPlanExec, AdaptiveSparkPlanHelper, CustomShuffleReaderExec, QueryStageExec}
 import org.apache.spark.sql.execution.columnar.InMemoryTableScanExec
 import org.apache.spark.sql.execution.command.{DataWritingCommandExec, ExecutedCommandExec}
 import org.apache.spark.sql.execution.datasources.v2.V2CommandExec
@@ -96,7 +96,7 @@ object GlutenExplainUtils extends AdaptiveSparkPlanHelper {
           } else {
             addFallbackNodeWithReason(i, "Columnar table cache is disabled", fallbackNodeToReason)
           }
-        case _: AQEShuffleReadExec => // Ignore
+        case _: CustomShuffleReaderExec => // Ignore
         case p: SparkPlan =>
           handleVanillaSparkPlan(p, fallbackNodeToReason)
           p.innerChildren.foreach(collect)

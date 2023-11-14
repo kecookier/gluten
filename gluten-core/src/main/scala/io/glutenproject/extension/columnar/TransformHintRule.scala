@@ -32,7 +32,7 @@ import org.apache.spark.sql.catalyst.plans.FullOuter
 import org.apache.spark.sql.catalyst.rules.Rule
 import org.apache.spark.sql.catalyst.trees.TreeNodeTag
 import org.apache.spark.sql.execution._
-import org.apache.spark.sql.execution.adaptive.{AQEShuffleReadExec, BroadcastQueryStageExec, QueryStageExec}
+import org.apache.spark.sql.execution.adaptive.{BroadcastQueryStageExec, CustomShuffleReaderExec, QueryStageExec}
 import org.apache.spark.sql.execution.aggregate.{HashAggregateExec, ObjectHashAggregateExec, SortAggregateExec}
 import org.apache.spark.sql.execution.datasources.v2.BatchScanExec
 import org.apache.spark.sql.execution.exchange._
@@ -177,7 +177,7 @@ case class FallbackMultiCodegens(session: SparkSession) extends Rule[SparkPlan] 
 
   def isAQEShuffleReadExec(plan: SparkPlan): Boolean = {
     plan match {
-      case _: AQEShuffleReadExec => true
+      case _: CustomShuffleReaderExec => true
       case _ => false
     }
   }
@@ -672,7 +672,7 @@ case class AddTransformHintRule() extends Rule[SparkPlan] {
         case plan: EvalPythonExec =>
           val transformer = EvalPythonExecTransformer(plan.udfs, plan.resultAttrs, plan.child)
           TransformHints.tag(plan, transformer.doValidate().toTransformHint)
-        case _: AQEShuffleReadExec =>
+        case _: CustomShuffleReaderExec =>
           TransformHints.tagTransformable(plan)
         case plan: TakeOrderedAndProjectExec =>
           if (!enableTakeOrderedAndProject) {

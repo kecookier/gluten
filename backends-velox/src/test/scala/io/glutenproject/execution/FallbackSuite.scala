@@ -20,7 +20,7 @@ import io.glutenproject.GlutenConfig
 
 import org.apache.spark.SparkConf
 import org.apache.spark.sql.execution.SparkPlan
-import org.apache.spark.sql.execution.adaptive.{AdaptiveSparkPlanHelper, AQEShuffleReadExec}
+import org.apache.spark.sql.execution.adaptive.{AdaptiveSparkPlanHelper, CustomShuffleReaderExec}
 
 class FallbackSuite extends VeloxWholeStageTransformerSuite with AdaptiveSparkPlanHelper {
   protected val rootPath: String = getClass.getResource("/").getPath
@@ -116,7 +116,7 @@ class FallbackSuite extends VeloxWholeStageTransformerSuite with AdaptiveSparkPl
     ) {
       df =>
         val aqeRead = find(df.queryExecution.executedPlan) {
-          case _: AQEShuffleReadExec => true
+          case _: CustomShuffleReaderExec => true
           case _ => false
         }
         assert(aqeRead.isDefined)
