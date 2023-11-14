@@ -332,17 +332,22 @@ case class AddTransformHintRule() extends Rule[SparkPlan] {
           if (!enableColumnarBatchScan) {
             TransformHints.tagNotTransformable(plan, "columnar BatchScan is disabled")
           } else {
-            // IF filter expressions aren't empty, we need to transform the inner operators.
-            if (plan.runtimeFilters.nonEmpty) {
-              TransformHints.tagTransformable(plan)
-            } else {
-              val transformer = new BatchScanExecTransformer(
-                plan.output,
-                plan.scan,
-                plan.runtimeFilters,
-                table = SparkShimLoader.getSparkShims.getBatchScanExecTable(plan))
-              TransformHints.tag(plan, transformer.doValidate().toTransformHint)
-            }
+//            // IF filter expressions aren't empty, we need to transform the inner operators.
+//            if (plan.runtimeFilters.nonEmpty) {
+//              TransformHints.tagTransformable(plan)
+//            } else {
+//              val transformer = new BatchScanExecTransformer(
+//                plan.output,
+//                plan.scan,
+//                plan.runtimeFilters,
+//                table = SparkShimLoader.getSparkShims.getBatchScanExecTable(plan))
+//              TransformHints.tag(plan, transformer.doValidate().toTransformHint)
+//            }
+            val transformer = new BatchScanExecTransformer(
+              plan.output,
+              plan.scan,
+              table = SparkShimLoader.getSparkShims.getBatchScanExecTable(plan))
+            TransformHints.tag(plan, transformer.doValidate().toTransformHint)
           }
         case plan: FileSourceScanExec =>
           if (!enableColumnarFileScan) {

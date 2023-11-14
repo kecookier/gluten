@@ -19,7 +19,6 @@ package io.glutenproject.execution
 import io.glutenproject.backendsapi.BackendsApiManager
 import io.glutenproject.expression.{ConverterUtils, ExpressionConverter, ExpressionTransformer}
 import io.glutenproject.extension.{GlutenPlan, ValidationResult}
-import io.glutenproject.extension.columnar.TransformHints
 import io.glutenproject.metrics.MetricsUpdater
 import io.glutenproject.sql.shims.SparkShimLoader
 import io.glutenproject.substrait.`type`.TypeBuilder
@@ -490,32 +489,33 @@ object FilterHandler {
           fileSourceScan.tableIdentifier,
           fileSourceScan.disableBucketedScan
         )
-      case batchScan: BatchScanExec =>
-        batchScan.scan match {
-          case scan: FileScan =>
-            val leftFilters =
-              getLeftFilters(scan.dataFilters, flattenCondition(plan.condition))
-            val newPartitionFilters =
-              ExpressionConverter.transformDynamicPruningExpr(scan.partitionFilters, reuseSubquery)
-            new BatchScanExecTransformer(
-              batchScan.output,
-              scan,
-              leftFilters ++ newPartitionFilters,
-              table = SparkShimLoader.getSparkShims.getBatchScanExecTable(batchScan))
-          case _ =>
-            if (batchScan.runtimeFilters.isEmpty) {
-              throw new UnsupportedOperationException(
-                s"${batchScan.scan.getClass.toString} is not supported.")
-            } else {
-              // IF filter expressions aren't empty, we need to transform the inner operators.
-              val newSource = batchScan.copy(runtimeFilters = ExpressionConverter
-                .transformDynamicPruningExpr(batchScan.runtimeFilters, reuseSubquery))
-              TransformHints.tagNotTransformable(
-                newSource,
-                "The scan in BatchScanExec is not a FileScan")
-              newSource
-            }
-        }
+//      case batchScan: BatchScanExec =>
+//        batchScan.scan match {
+//          case scan: FileScan =>
+//            val leftFilters =
+//              getLeftFilters(scan.dataFilters, flattenCondition(plan.condition))
+//            val newPartitionFilters =
+//              ExpressionConverter.transformDynamicPruningExpr(
+//                scan.partitionFilters, reuseSubquery)
+//            new BatchScanExecTransformer(
+//              batchScan.output,
+//              scan,
+//              leftFilters ++ newPartitionFilters,
+//              table = SparkShimLoader.getSparkShims.getBatchScanExecTable(batchScan))
+//          case _ =>
+//            if (batchScan.runtimeFilters.isEmpty) {
+//              throw new UnsupportedOperationException(
+//                s"${batchScan.scan.getClass.toString} is not supported.")
+//            } else {
+//              // IF filter expressions aren't empty, we need to transform the inner operators.
+//              val newSource = batchScan.copy(runtimeFilters = ExpressionConverter
+//                .transformDynamicPruningExpr(batchScan.runtimeFilters, reuseSubquery))
+//              TransformHints.tagNotTransformable(
+//                newSource,
+//                "The scan in BatchScanExec is not a FileScan")
+//              newSource
+//            }
+//        }
       case other =>
         throw new UnsupportedOperationException(s"${other.getClass.toString} is not supported.")
     }

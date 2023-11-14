@@ -43,14 +43,13 @@ import java.util.Objects
 class BatchScanExecTransformer(
     output: Seq[AttributeReference],
     @transient scan: Scan,
-    runtimeFilters: Seq[Expression],
     keyGroupedPartitioning: Option[Seq[Expression]] = None,
     ordering: Option[Seq[SortOrder]] = None,
     @transient table: Table,
     commonPartitionValues: Option[Seq[(InternalRow, Int)]] = None,
     applyPartialClustering: Boolean = false,
     replicatePartitions: Boolean = false)
-  extends BatchScanExecShim(output, scan, runtimeFilters, table)
+  extends BatchScanExecShim(output, scan)
   with BasicScanExecTransformer {
 
   // Note: "metrics" is made transient to avoid sending driver-side metrics to tasks.
@@ -85,13 +84,6 @@ class BatchScanExecTransformer(
     }
   }
 
-  override def doValidateInternal(): ValidationResult = {
-    if (pushedAggregate.nonEmpty) {
-      return ValidationResult.notOk(s"Unsupported aggregation push down for $scan.")
-    }
-    super.doValidateInternal()
-  }
-
   override def doExecuteColumnar(): RDD[ColumnarBatch] = {
     doExecuteColumnarInternal()
   }
@@ -102,7 +94,7 @@ class BatchScanExecTransformer(
     case _ => false
   }
 
-  override def hashCode(): Int = Objects.hash(batch, runtimeFilters)
+  override def hashCode(): Int = Objects.hash(batch)
 
   override def canEqual(other: Any): Boolean = other.isInstanceOf[BatchScanExecTransformer]
 
@@ -125,7 +117,6 @@ class BatchScanExecTransformer(
     new BatchScanExecTransformer(
       canonicalized.output,
       canonicalized.scan,
-      canonicalized.runtimeFilters,
       table = SparkShimLoader.getSparkShims.getBatchScanExecTable(canonicalized)
     )
   }
