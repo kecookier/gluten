@@ -406,8 +406,10 @@ trait SparkPlanExecApi {
               frame.frameType.sql
             )
             windowExpressionNodes.add(windowFunctionNode)
-          case wf @ (Lead(_, _, _, _) | Lag(_, _, _, _)) =>
-            val offset_wf = wf.asInstanceOf[FrameLessOffsetWindowFunction]
+//          case wf@(Lead(_, _, _, _) | Lag(_, _, _, _)) =>
+//            val offset_wf = wf.asInstanceOf[FrameLessOffsetWindowFunction]
+          case wf @ (Lead(_, _, _) | Lag(_, _, _)) =>
+            val offset_wf = wf.asInstanceOf[OffsetWindowFunction]
             val frame = offset_wf.frame.asInstanceOf[SpecifiedWindowFrame]
             val childrenNodeList = new JArrayList[ExpressionNode]()
             childrenNodeList.add(
