@@ -384,7 +384,7 @@ object ConverterUtils extends Logging {
           })
         sigName = sigName.concat(">")
         sigName
-      case MapType(_, _, _) =>
+      case MapType(_, _, _, _) =>
         "map"
       case CharType(_) =>
         "fchar"

@@ -126,7 +126,7 @@ trait HashJoinLikeExecTransformer
       case (ArrayType(fromElement, _), ArrayType(toElement, _)) =>
         sameType(fromElement, toElement)
 
-      case (MapType(fromKey, fromValue, _), MapType(toKey, toValue, _)) =>
+      case (MapType(fromKey, fromValue, _, _), MapType(toKey, toValue, _, _)) =>
         sameType(fromKey, toKey) &&
         sameType(fromValue, toValue)
 

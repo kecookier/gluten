@@ -79,7 +79,7 @@ class ToSubstraitType {
       case BinaryType => Some(creator.BINARY)
       case ArrayType(elementType, containsNull) =>
         convert(elementType, Seq.empty, containsNull).map(creator.list)
-      case MapType(keyType, valueType, valueContainsNull) =>
+      case MapType(keyType, valueType, valueContainsNull, _) =>
         convert(keyType, Seq.empty, nullable = false)
           .flatMap(
             keyT =>

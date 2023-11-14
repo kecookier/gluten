@@ -211,7 +211,7 @@ trait GlutenTestsTrait extends GlutenTestsCommonTrait {
           isSame
         }
       case (result: MapData, expected: MapData) =>
-        val MapType(kt, vt, vcn) = dataType.asInstanceOf[MapType]
+        val MapType(kt, vt, vcn, _) = dataType.asInstanceOf[MapType]
         checkResult(
           getSortedArrays(result, kt, vt)._1,
           getSortedArrays(expected, kt, vt)._1,

@@ -91,7 +91,7 @@ object SparkArrowUtil {
             .map(field => toArrowField(field.name, field.dataType, field.nullable, timeZoneId))
             .toSeq
             .asJava)
-      case MapType(keyType, valueType, valueContainsNull) =>
+      case MapType(keyType, valueType, valueContainsNull, _) =>
         val mapType = new FieldType(nullable, new ArrowType.Map(false), null)
         // Note: Map Type struct can not be null, Struct Type key field can not be null
         new Field(
