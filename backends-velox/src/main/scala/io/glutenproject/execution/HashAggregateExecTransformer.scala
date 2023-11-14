@@ -390,7 +390,7 @@ case class HashAggregateExecTransformer(
                     .doTransform(args)
                   val expressionNode = if (sparkType != veloxType) {
                     newInputAttributes +=
-                      attr.copy(dataType = veloxType)(attr.exprId, attr.qualifier)
+                      attr.copy(dataType = veloxType)(attr.exprId, attr.qualifier, false)
                     ExpressionBuilder.makeCast(
                       ConverterUtils.getTypeNode(veloxType, attr.nullable),
                       aggFuncInputAttrNode,
