@@ -75,7 +75,7 @@ class ToSubstraitType {
       case StringType => Some(creator.STRING)
       case DateType => Some(creator.DATE)
       case TimestampType => Some(creator.TIMESTAMP)
-      case TimestampNTZType => Some(creator.TIMESTAMP_TZ)
+      // case TimestampNTZType => Some(creator.TIMESTAMP_TZ)
       case BinaryType => Some(creator.BINARY)
       case ArrayType(elementType, containsNull) =>
         convert(elementType, Seq.empty, containsNull).map(creator.list)
