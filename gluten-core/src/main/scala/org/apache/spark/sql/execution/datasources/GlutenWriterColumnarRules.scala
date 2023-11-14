@@ -169,8 +169,7 @@ object GlutenWriterColumnarRules {
                       aqe.inputPlan,
                       aqe.context,
                       aqe.preprocessingRules,
-                      aqe.isSubquery,
-                      supportsColumnar = true
+                      aqe.isSubquery
                     ))))
             case other => rc.withNewChildren(Array(FakeRowAdaptor(other)))
           }
