@@ -245,16 +245,16 @@ class ToSubstraitRel extends AbstractLogicalPlanVisitor with Logging {
     val expr = toExpression(output)(order.child)
     SExpression.SortField.builder().expr(expr).direction(direction).build()
   }
-  override def visitSort(sort: Sort): relation.Rel = {
-    val input = visit(sort.child)
-    val fields = sort.order.map(toSortField(sort.child.output)).asJava
-    relation.Sort.builder.addAllSortFields(fields).input(input).build
-  }
+  // override def visitSort(sort: Sort): relation.Rel = {
+  //   val input = visit(sort.child)
+  //   val fields = sort.order.map(toSortField(sort.child.output)).asJava
+  //   relation.Sort.builder.addAllSortFields(fields).input(input).build
+  // }
 
-  override def visitOffset(plan: Offset): relation.Rel = {
-    throw new UnsupportedOperationException(
-      s"Unable to convert the plan to a substrait plan: $plan")
-  }
+//  override def visitOffset(plan: Offset): relation.Rel = {
+//    throw new UnsupportedOperationException(
+//      s"Unable to convert the plan to a substrait plan: $plan")
+//  }
 
   private def toExpression(output: Seq[Attribute])(e: Expression): SExpression = {
     toSubstraitExp(e, output)
