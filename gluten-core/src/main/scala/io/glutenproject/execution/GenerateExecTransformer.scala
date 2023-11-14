@@ -54,8 +54,8 @@ case class GenerateExecTransformer(
 
   override def producedAttributes: AttributeSet = AttributeSet(generatorOutput)
 
-  override protected def withNewChildInternal(newChild: SparkPlan): GenerateExecTransformer =
-    copy(generator, requiredChildOutput, outer, generatorOutput, newChild)
+  // override protected def withNewChildInternal(newChild: SparkPlan): GenerateExecTransformer =
+  //   copy(generator, requiredChildOutput, outer, generatorOutput, newChild)
 
   override protected def doValidateInternal(): ValidationResult = {
     val validationResult =

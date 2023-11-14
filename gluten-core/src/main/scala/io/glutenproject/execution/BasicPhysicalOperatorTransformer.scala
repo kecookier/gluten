@@ -297,8 +297,8 @@ case class ProjectExecTransformer private (projectList: Seq[NamedExpression], ch
     throw new UnsupportedOperationException(s"This operator doesn't support doExecuteColumnar().")
   }
 
-  override protected def withNewChildInternal(newChild: SparkPlan): ProjectExecTransformer =
-    copy(child = newChild)
+//  override protected def withNewChildInternal(newChild: SparkPlan): ProjectExecTransformer =
+//    copy(child = newChild)
 }
 object ProjectExecTransformer {
   private def processProjectExecTransformer(
@@ -364,9 +364,9 @@ case class UnionExecTransformer(children: Seq[SparkPlan]) extends SparkPlan with
     }
   }
 
-  override protected def withNewChildrenInternal(
-      newChildren: IndexedSeq[SparkPlan]): UnionExecTransformer =
-    copy(children = newChildren)
+//  override protected def withNewChildrenInternal(
+//      newChildren: IndexedSeq[SparkPlan]): UnionExecTransformer =
+//    copy(children = newChildren)
 
   def columnarInputRDD: RDD[ColumnarBatch] = {
     if (children.isEmpty) {

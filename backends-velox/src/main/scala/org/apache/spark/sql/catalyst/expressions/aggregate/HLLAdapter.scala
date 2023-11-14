@@ -108,8 +108,8 @@ case class HLLAdapter(
 
   override def right: Expression = relativeSDExpr
 
-  override protected def withNewChildrenInternal(
-      newLeft: Expression,
-      newRight: Expression): HLLAdapter =
-    this.copy(child = newLeft, relativeSDExpr = newRight)
+  // override protected def withNewChildrenInternal(
+  //     newLeft: Expression,
+  //     newRight: Expression): HLLAdapter =
+  //   this.copy(child = newLeft, relativeSDExpr = newRight)
 }

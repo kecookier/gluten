@@ -160,8 +160,8 @@ case class ColumnarShuffleExchangeExec(
     child.output
   }
 
-  protected def withNewChildInternal(newChild: SparkPlan): ColumnarShuffleExchangeExec =
-    copy(child = newChild)
+  // protected def withNewChildInternal(newChild: SparkPlan): ColumnarShuffleExchangeExec =
+  //   copy(child = newChild)
 }
 
 object ColumnarShuffleExchangeExec extends Logging {

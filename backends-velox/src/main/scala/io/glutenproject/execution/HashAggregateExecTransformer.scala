@@ -70,9 +70,10 @@ case class HashAggregateExecTransformer(
     }
   }
 
-  override protected def withNewChildInternal(newChild: SparkPlan): HashAggregateExecTransformer = {
-    copy(child = newChild)
-  }
+  // override protected def withNewChildInternal(newChild: SparkPlan):
+  //  HashAggregateExecTransformer = {
+  //   copy(child = newChild)
+  // }
 
   /**
    * Returns whether extracting subfield from struct is needed. True when the intermediate type of

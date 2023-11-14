@@ -171,8 +171,8 @@ case class ColumnarBroadcastExchangeExec(mode: BroadcastMode, child: SparkPlan)
     }
   }
 
-  override protected def withNewChildInternal(newChild: SparkPlan): ColumnarBroadcastExchangeExec =
-    copy(child = newChild)
+  // override protected def withNewChildInternal(newChild: SparkPlan):
+  //  ColumnarBroadcastExchangeExec = copy(child = newChild)
 
   // Ported from BroadcastExchangeExec
   override def runtimeStatistics: Statistics = {

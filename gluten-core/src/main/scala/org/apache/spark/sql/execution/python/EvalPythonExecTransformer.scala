@@ -57,8 +57,8 @@ case class EvalPythonExecTransformer(
     throw new IllegalStateException("EvalPythonExecTransformer doesn't support evaluate")
   }
 
-  override protected def withNewChildInternal(newChild: SparkPlan): EvalPythonExecTransformer =
-    copy(udfs, resultAttrs, newChild)
+//  override protected def withNewChildInternal(newChild: SparkPlan): EvalPythonExecTransformer =
+//    copy(udfs, resultAttrs, newChild)
 
   override protected def doValidateInternal(): ValidationResult = {
     // All udfs should be scalar python udf

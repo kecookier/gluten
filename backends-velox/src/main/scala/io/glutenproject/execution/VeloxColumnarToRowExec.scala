@@ -81,8 +81,8 @@ case class VeloxColumnarToRowExec(child: SparkPlan) extends ColumnarToRowExecBas
     }
   }
 
-  protected def withNewChildInternal(newChild: SparkPlan): VeloxColumnarToRowExec =
-    copy(child = newChild)
+//  protected def withNewChildInternal(newChild: SparkPlan): VeloxColumnarToRowExec =
+//    copy(child = newChild)
 }
 
 object VeloxColumnarToRowExec {

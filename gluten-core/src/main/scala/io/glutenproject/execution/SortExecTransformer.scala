@@ -273,8 +273,8 @@ case class SortExecTransformer(
     throw new UnsupportedOperationException(s"This operator doesn't support doExecuteColumnar().")
   }
 
-  override protected def withNewChildInternal(newChild: SparkPlan): SortExecTransformer =
-    copy(child = newChild)
+//  override protected def withNewChildInternal(newChild: SparkPlan): SortExecTransformer =
+//    copy(child = newChild)
 }
 
 object SortExecTransformer {

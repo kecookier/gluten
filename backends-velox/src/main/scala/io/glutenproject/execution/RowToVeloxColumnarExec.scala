@@ -72,8 +72,8 @@ case class RowToVeloxColumnarExec(child: SparkPlan) extends RowToColumnarExecBas
   }
 
   // For spark 3.2.
-  protected def withNewChildInternal(newChild: SparkPlan): RowToVeloxColumnarExec =
-    copy(child = newChild)
+//  protected def withNewChildInternal(newChild: SparkPlan): RowToVeloxColumnarExec =
+//    copy(child = newChild)
 }
 
 object RowToVeloxColumnarExec {

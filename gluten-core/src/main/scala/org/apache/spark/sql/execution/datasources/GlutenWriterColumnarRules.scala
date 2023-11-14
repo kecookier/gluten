@@ -39,8 +39,8 @@ private case class FakeRowLogicAdaptor(child: LogicalPlan) extends OrderPreservi
   override def output: Seq[Attribute] = child.output
 
   // For spark 3.2.
-  protected def withNewChildInternal(newChild: LogicalPlan): FakeRowLogicAdaptor =
-    copy(child = newChild)
+//  protected def withNewChildInternal(newChild: LogicalPlan): FakeRowLogicAdaptor =
+//    copy(child = newChild)
 }
 
 /**
@@ -74,8 +74,8 @@ case class FakeRowAdaptor(child: SparkPlan)
   }
 
   // For spark 3.2.
-  protected def withNewChildInternal(newChild: SparkPlan): FakeRowAdaptor =
-    copy(child = newChild)
+//  protected def withNewChildInternal(newChild: SparkPlan): FakeRowAdaptor =
+//    copy(child = newChild)
 }
 
 case class MATERIALIZE_TAG()

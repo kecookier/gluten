@@ -147,10 +147,10 @@ case class ShuffledHashJoinExecTransformer(
       JoinRel.JoinType.UNRECOGNIZED
   }
 
-  override protected def withNewChildrenInternal(
-      newLeft: SparkPlan,
-      newRight: SparkPlan): ShuffledHashJoinExecTransformer =
-    copy(left = newLeft, right = newRight)
+//  override protected def withNewChildrenInternal(
+//      newLeft: SparkPlan,
+//      newRight: SparkPlan): ShuffledHashJoinExecTransformer =
+//    copy(left = newLeft, right = newRight)
 }
 
 case class GlutenBroadcastHashJoinExecTransformer(
@@ -191,8 +191,8 @@ case class GlutenBroadcastHashJoinExecTransformer(
       JoinRel.JoinType.UNRECOGNIZED
   }
 
-  override protected def withNewChildrenInternal(
-      newLeft: SparkPlan,
-      newRight: SparkPlan): GlutenBroadcastHashJoinExecTransformer =
-    copy(left = newLeft, right = newRight)
+//  override protected def withNewChildrenInternal(
+//      newLeft: SparkPlan,
+//      newRight: SparkPlan): GlutenBroadcastHashJoinExecTransformer =
+//    copy(left = newLeft, right = newRight)
 }

@@ -43,8 +43,8 @@ case class LimitTransformer(child: SparkPlan, offset: Long, count: Long)
 
   override def output: Seq[Attribute] = child.output
 
-  override protected def withNewChildInternal(newChild: SparkPlan): LimitTransformer =
-    copy(child = newChild)
+//  override protected def withNewChildInternal(newChild: SparkPlan): LimitTransformer =
+//    copy(child = newChild)
 
   override def doExecuteColumnar(): RDD[ColumnarBatch] = {
     throw new UnsupportedOperationException(s"This operator doesn't support doExecuteColumnar().")

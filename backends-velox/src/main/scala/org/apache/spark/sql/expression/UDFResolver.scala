@@ -48,10 +48,10 @@ case class UDFExpression(
     nullable: Boolean,
     children: Seq[Expression])
   extends Transformable {
-  override protected def withNewChildrenInternal(
-      newChildren: IndexedSeq[Expression]): Expression = {
-    this.copy(children = newChildren)
-  }
+//  override protected def withNewChildrenInternal(
+//      newChildren: IndexedSeq[Expression]): Expression = {
+//    this.copy(children = newChildren)
+//  }
 
   override def getTransformer(
       childrenTransformers: Seq[ExpressionTransformer]): ExpressionTransformer = {

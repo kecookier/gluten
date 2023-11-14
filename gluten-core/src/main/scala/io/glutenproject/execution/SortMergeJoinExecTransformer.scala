@@ -316,8 +316,8 @@ case class SortMergeJoinExecTransformer(
     throw new UnsupportedOperationException(s"This operator doesn't support doExecuteColumnar().")
   }
 
-  override protected def withNewChildrenInternal(
-      newLeft: SparkPlan,
-      newRight: SparkPlan): SortMergeJoinExecTransformer =
-    copy(left = newLeft, right = newRight)
+//  override protected def withNewChildrenInternal(
+//      newLeft: SparkPlan,
+//      newRight: SparkPlan): SortMergeJoinExecTransformer =
+//    copy(left = newLeft, right = newRight)
 }

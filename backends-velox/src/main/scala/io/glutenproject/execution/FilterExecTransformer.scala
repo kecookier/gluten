@@ -112,6 +112,6 @@ case class FilterExecTransformer(condition: Expression, child: SparkPlan)
     }
   }
 
-  override protected def withNewChildInternal(newChild: SparkPlan): FilterExecTransformer =
-    copy(child = newChild)
+  // override protected def withNewChildInternal(newChild: SparkPlan): FilterExecTransformer =
+  //   copy(child = newChild)
 }

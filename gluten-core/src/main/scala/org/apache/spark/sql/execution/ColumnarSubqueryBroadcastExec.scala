@@ -129,6 +129,6 @@ case class ColumnarSubqueryBroadcastExec(
 
   override def stringArgs: Iterator[Any] = super.stringArgs ++ Iterator(s"[id=#$id]")
 
-  protected def withNewChildInternal(newChild: SparkPlan): ColumnarSubqueryBroadcastExec =
-    copy(child = newChild)
+  // protected def withNewChildInternal(newChild: SparkPlan): ColumnarSubqueryBroadcastExec =
+  //   copy(child = newChild)
 }

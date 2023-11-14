@@ -52,9 +52,9 @@ case class TakeOrderedAndProjectExecTransformer(
       s"orderBy=$orderByString, output=$outputString)"
   }
 
-  override protected def withNewChildInternal(newChild: SparkPlan): SparkPlan = {
-    copy(child = newChild)
-  }
+  // override protected def withNewChildInternal(newChild: SparkPlan): SparkPlan = {
+  //   copy(child = newChild)
+  // }
 
   override protected def doExecute(): RDD[InternalRow] = {
     throw new UnsupportedOperationException(s"This operator doesn't support doExecute().")

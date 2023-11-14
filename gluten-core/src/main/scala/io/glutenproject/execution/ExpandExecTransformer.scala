@@ -233,6 +233,6 @@ case class ExpandExecTransformer(
     throw new UnsupportedOperationException(s"This operator doesn't support doExecuteColumnar().")
   }
 
-  override protected def withNewChildInternal(newChild: SparkPlan): ExpandExecTransformer =
-    copy(child = newChild)
+  // override protected def withNewChildInternal(newChild: SparkPlan): ExpandExecTransformer =
+  //   copy(child = newChild)
 }

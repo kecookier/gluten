@@ -355,8 +355,8 @@ case class WholeStageTransformer(child: SparkPlan, materializeInput: Boolean = f
       .getOrElse(NoopMetricsUpdater)
   }
 
-  override protected def withNewChildInternal(newChild: SparkPlan): WholeStageTransformer =
-    copy(child = newChild, materializeInput = materializeInput)(transformStageId)
+//  override protected def withNewChildInternal(newChild: SparkPlan): WholeStageTransformer =
+//    copy(child = newChild, materializeInput = materializeInput)(transformStageId)
 
   private def getSplitInfosFromScanTransformer(
       basicScanExecTransformers: Seq[BasicScanExecTransformer]): Seq[Seq[SplitInfo]] = {
