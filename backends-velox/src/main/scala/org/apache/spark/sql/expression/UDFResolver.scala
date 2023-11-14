@@ -32,6 +32,7 @@ import org.apache.spark.sql.catalyst.FunctionIdentifier
 import org.apache.spark.sql.catalyst.analysis.FunctionRegistry.FunctionBuilder
 import org.apache.spark.sql.catalyst.expressions.{Expression, ExpressionInfo}
 import org.apache.spark.sql.types.DataType
+import org.apache.spark.util.MeituanUtils
 import org.apache.spark.util.Utils
 
 import com.google.common.collect.Lists
@@ -140,7 +141,7 @@ object UDFResolver extends Logging {
       s"Unpacking an archive $sourceName from ${source.getAbsolutePath} to ${dest.getAbsolutePath}")
     try {
       Utils.deleteRecursively(dest)
-      Utils.unpack(source, dest)
+      MeituanUtils.unpack(source, dest)
     } catch {
       case e: Exception =>
         throw new GlutenException(
