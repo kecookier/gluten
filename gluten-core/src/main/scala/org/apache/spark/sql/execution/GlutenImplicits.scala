@@ -38,8 +38,8 @@ import scala.collection.mutable.ArrayBuffer
  * A helper class to get the Gluten fallback summary from a Spark [[Dataset]].
  *
  * Note that, if AQE is enabled, but the query is not materialized, then this method will re-plan
- * the query execution with disabled AQE. It is a workaround to get the final plan, and it may
- * cause the inconsistent results with a materialized query. However, we have no choice.
+ * the query execution with disabled AQE. It is a workaround to get the final plan, and it may cause
+ * the inconsistent results with a materialized query. However, we have no choice.
  *
  * For example:
  *
@@ -71,7 +71,7 @@ object GlutenImplicits {
     }
     keys.zip(values).foreach {
       case (k, v) =>
-        if (SQLConf.isStaticConfigKey(k)) {
+        if (SQLConf.staticConfKeys.contains(k)) {
           throw new AnalysisException(s"Cannot modify the value of a static config: $k")
         }
         conf.setConfString(k, v)

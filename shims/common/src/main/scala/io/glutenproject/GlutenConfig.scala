@@ -456,7 +456,8 @@ object GlutenConfig {
 
     // Backend's dynamic session conf only.
     conf
-      .filter(entry => entry._1.startsWith(backendPrefix) && !SQLConf.isStaticConfigKey(entry._1))
+      .filter(
+        entry => entry._1.startsWith(backendPrefix) && !SQLConf.staticConfKeys.contains(entry._1))
       .foreach(entry => nativeConfMap.put(entry._1, entry._2))
 
     // Pass the latest tokens to native
