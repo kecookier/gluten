@@ -197,7 +197,7 @@ object ExpressionConverter extends SQLConfHelper with Logging {
           substraitExprName,
           replaceWithExpressionTransformer(u.timeExp, attributeSeq),
           replaceWithExpressionTransformer(u.format, attributeSeq),
-          ToUnixTimestamp(u.timeExp, u.format, u.timeZoneId, u.failOnError)
+          ToUnixTimestamp(u.timeExp, u.format, u.timeZoneId)
         )
       case t: TruncTimestamp =>
         BackendsApiManager.getSparkPlanExecApiInstance.genTruncTimestampTransformer(
@@ -295,14 +295,14 @@ object ExpressionConverter extends SQLConfHelper with Logging {
           replaceWithExpressionTransformer(t.replaceExpr, attributeSeq),
           t
         )
-      case l: StringLocate =>
-        BackendsApiManager.getSparkPlanExecApiInstance.genStringLocateTransformer(
-          substraitExprName,
-          replaceWithExpressionTransformer(l.first, attributeSeq),
-          replaceWithExpressionTransformer(l.second, attributeSeq),
-          replaceWithExpressionTransformer(l.third, attributeSeq),
-          l
-        )
+//      case l: StringLocate =>
+//        BackendsApiManager.getSparkPlanExecApiInstance.genStringLocateTransformer(
+//          substraitExprName,
+//          replaceWithExpressionTransformer(l.first, attributeSeq),
+//          replaceWithExpressionTransformer(l.second, attributeSeq),
+//          replaceWithExpressionTransformer(l.third, attributeSeq),
+//          l
+//        )
       case s: StringSplit =>
         BackendsApiManager.getSparkPlanExecApiInstance.genStringSplitTransformer(
           substraitExprName,

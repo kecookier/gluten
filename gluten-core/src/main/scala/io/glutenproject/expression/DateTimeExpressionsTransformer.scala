@@ -130,7 +130,6 @@ case class ToUnixTimestampTransformer(
     timeExp: ExpressionTransformer,
     format: ExpressionTransformer,
     timeZoneId: Option[String],
-    failOnError: Boolean,
     original: ToUnixTimestamp)
   extends ExpressionTransformer {
 

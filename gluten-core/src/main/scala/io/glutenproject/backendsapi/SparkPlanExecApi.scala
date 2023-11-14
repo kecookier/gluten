@@ -273,14 +273,14 @@ trait SparkPlanExecApi {
       original)
   }
 
-  def genStringLocateTransformer(
-      substraitExprName: String,
-      first: ExpressionTransformer,
-      second: ExpressionTransformer,
-      third: ExpressionTransformer,
-      original: StringLocate): ExpressionTransformer = {
-    GenericExpressionTransformer(substraitExprName, Seq(first, second, third), original)
-  }
+//  def genStringLocateTransformer(
+//      substraitExprName: String,
+//      first: ExpressionTransformer,
+//      second: ExpressionTransformer,
+//      third: ExpressionTransformer,
+//      original: StringLocate): ExpressionTransformer = {
+//    GenericExpressionTransformer(substraitExprName, Seq(first, second, third), original)
+//  }
 
   /**
    * Generate an ExpressionTransformer to transform Sha2 expression. Sha2Transformer is the default
@@ -339,13 +339,7 @@ trait SparkPlanExecApi {
       timeExp: ExpressionTransformer,
       format: ExpressionTransformer,
       original: ToUnixTimestamp): ExpressionTransformer = {
-    ToUnixTimestampTransformer(
-      substraitExprName,
-      timeExp,
-      format,
-      original.timeZoneId,
-      original.failOnError,
-      original)
+    ToUnixTimestampTransformer(substraitExprName, timeExp, format, original.timeZoneId, original)
   }
 
   /** Define backend specfic expression mappings. */
