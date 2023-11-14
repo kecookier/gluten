@@ -45,6 +45,21 @@ case class InputPartitionsUtil(
 
   private def genNonBuckedInputPartitionSeq(): Seq[InputPartition] = {
     val openCostInBytes = relation.sparkSession.sessionState.conf.filesOpenCostInBytes
+    val splitLargeFile =
+      if (relation.sparkSession.sessionState.conf.filesSplitSingleFileByHiveStrategy) {
+        val hiveStrategyConf = "spark.hadoop.hive.exec.orc.split.strategy"
+        if (
+          relation.sparkSession.sessionState.conf.contains(hiveStrategyConf)
+          && relation.sparkSession.sessionState.conf.getConfString(hiveStrategyConf) == "ETL"
+        ) {
+          true
+        } else {
+          logInfo(s"Not split single file for hive orc split strategy.")
+          false
+        }
+      } else {
+        true
+      }
     val maxSplitBytes =
       FilePartition.maxSplitBytes(relation.sparkSession, selectedPartitions)
     logInfo(
@@ -58,8 +73,11 @@ case class InputPartitionsUtil(
             file =>
               // getPath() is very expensive so we only want to call it once in this block:
               val filePath = file.getPath
-              val isSplitable =
+              val isSplitable = if (splitLargeFile) {
                 relation.fileFormat.isSplitable(relation.sparkSession, relation.options, filePath)
+              } else {
+                false
+              }
               PartitionedFileUtil.splitFiles(
                 sparkSession = relation.sparkSession,
                 file = file,
