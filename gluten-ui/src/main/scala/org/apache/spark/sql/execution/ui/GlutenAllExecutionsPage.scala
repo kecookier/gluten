@@ -18,7 +18,6 @@ package org.apache.spark.sql.execution.ui
 
 import org.apache.spark.internal.Logging
 import org.apache.spark.sql.catalyst.util.StringUtils.PlanStringConcat
-import org.apache.spark.sql.errors.QueryExecutionErrors
 import org.apache.spark.ui.{PagedDataSource, PagedTable, UIUtils, WebUIPage}
 import org.apache.spark.util.Utils
 
@@ -283,7 +282,7 @@ private[ui] class GlutenExecutionDataSource(
       case "Description" => Ordering.by(_.executionUIData.fallbackDescription)
       case "Num Gluten Nodes" => Ordering.by(_.executionUIData.numGlutenNodes)
       case "Num Fallback Nodes" => Ordering.by(_.executionUIData.numFallbackNodes)
-      case unknownColumn => throw QueryExecutionErrors.unknownColumnError(unknownColumn)
+      case unknownColumn => throw new Exception(Map("unknownColumn" -> unknownColumn).toString())
     }
     if (desc) {
       ordering.reverse
