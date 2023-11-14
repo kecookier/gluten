@@ -45,6 +45,7 @@ import org.apache.spark.util.ExecutorManager
 import java.lang.{Long => JLong}
 import java.net.URLDecoder
 import java.nio.charset.StandardCharsets
+import java.time.ZoneId
 import java.time.ZoneOffset
 import java.util.{ArrayList => JArrayList, HashMap => JHashMap, Map => JMap}
 
@@ -101,7 +102,7 @@ class IteratorApiImpl extends IteratorApi with Logging {
               case _: BinaryType =>
                 new String(pn.asInstanceOf[Array[Byte]], StandardCharsets.UTF_8)
               case _: DateType =>
-                DateFormatter.apply().format(pn.asInstanceOf[Integer])
+                DateFormatter.apply(ZoneId.systemDefault).format(pn.asInstanceOf[Integer])
               case _: TimestampType =>
                 TimestampFormatter
                   .getFractionFormatter(ZoneOffset.UTC)
