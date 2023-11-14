@@ -302,9 +302,9 @@ class ToSubstraitRel extends AbstractLogicalPlanVisitor with Logging {
       case logicalRelation: LogicalRelation if logicalRelation.catalogTable.isDefined =>
         tableNames = logicalRelation.catalogTable.get.identifier.unquotedString.split("\\.").toList
         buildNamedScan(logicalRelation.schema, tableNames)
-      case dataSourceV2ScanRelation: DataSourceV2ScanRelation =>
-        tableNames = dataSourceV2ScanRelation.relation.identifier.get.toString.split("\\.").toList
-        buildNamedScan(dataSourceV2ScanRelation.schema, tableNames)
+//      case dataSourceV2ScanRelation: DataSourceV2ScanRelation =>
+//        tableNames = dataSourceV2ScanRelation.relation.identifier.get.toString.split("\\.").toList
+//        buildNamedScan(dataSourceV2ScanRelation.schema, tableNames)
       case dataSourceV2Relation: DataSourceV2Relation =>
         tableNames = dataSourceV2Relation.identifier.get.toString.split("\\.").toList
         buildNamedScan(dataSourceV2Relation.schema, tableNames)
