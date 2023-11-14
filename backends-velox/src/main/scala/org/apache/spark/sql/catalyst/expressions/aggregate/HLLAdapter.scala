@@ -18,7 +18,6 @@ package org.apache.spark.sql.catalyst.expressions.aggregate
 
 import org.apache.spark.sql.catalyst.InternalRow
 import org.apache.spark.sql.catalyst.expressions._
-import org.apache.spark.sql.catalyst.trees.BinaryLike
 import org.apache.spark.sql.catalyst.util.HyperLogLogPlusPlusHelper
 import org.apache.spark.sql.types._
 
@@ -29,8 +28,7 @@ case class HLLAdapter(
     relativeSDExpr: Expression,
     mutableAggBufferOffset: Int = 0,
     inputAggBufferOffset: Int = 0)
-  extends TypedImperativeAggregate[GenericInternalRow]
-  with BinaryLike[Expression] {
+  extends TypedImperativeAggregate[GenericInternalRow] {
 
   def this(child: Expression, relativeSDExpr: Expression) = {
     this(
@@ -104,9 +102,10 @@ case class HLLAdapter(
     data
   }
 
-  override def left: Expression = child
+  override def children: Seq[Expression] = Nil
+//  override def left: Expression = child
 
-  override def right: Expression = relativeSDExpr
+//  override def right: Expression = relativeSDExpr
 
   // override protected def withNewChildrenInternal(
   //     newLeft: Expression,
