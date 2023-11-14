@@ -18,7 +18,7 @@ package io.substrait.spark.expression
 
 import org.apache.spark.internal.Logging
 import org.apache.spark.sql.catalyst.SQLConfHelper
-import org.apache.spark.sql.catalyst.analysis.{AnsiTypeCoercion, TypeCoercion}
+import org.apache.spark.sql.catalyst.analysis.TypeCoercion
 import org.apache.spark.sql.catalyst.expressions.Expression
 import org.apache.spark.sql.catalyst.expressions.aggregate.AggregateExpression
 import org.apache.spark.sql.types.DataType
@@ -132,12 +132,13 @@ object FunctionFinder extends SQLConfHelper {
    *   canonical union type descriptor
    */
   def leastRestrictive(types: Seq[DataType]): Option[DataType] = {
-    val typeCoercion = if (conf.ansiEnabled) {
-      AnsiTypeCoercion
-    } else {
-      TypeCoercion
-    }
-    typeCoercion.findWiderCommonType(types)
+    // val typeCoercion = if (conf.ansiEnabled) {
+    //   AnsiTypeCoercion
+    // } else {
+    //   TypeCoercion
+    // }
+    // typeCoercion.findWiderCommonType(types)
+    TypeCoercion.findWiderCommonType(types)
   }
 
   /**
