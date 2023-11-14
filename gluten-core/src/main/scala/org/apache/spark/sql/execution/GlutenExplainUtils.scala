@@ -78,7 +78,6 @@ object GlutenExplainUtils extends AdaptiveSparkPlanHelper {
     def collect(tmp: QueryPlan[_]): Unit = {
       tmp.foreachUp {
         case _: ExecutedCommandExec =>
-        case _: CommandResultExec =>
         case _: V2CommandExec =>
         case _: DataWritingCommandExec =>
         case _: WholeStageCodegenExec =>

@@ -21,7 +21,7 @@ import io.glutenproject.extension.{GlutenPlan, InMemoryTableScanHelper}
 
 import org.apache.spark.sql.{AnalysisException, Dataset}
 import org.apache.spark.sql.catalyst.plans.QueryPlan
-import org.apache.spark.sql.catalyst.plans.logical.{CommandResult, LogicalPlan}
+import org.apache.spark.sql.catalyst.plans.logical.LogicalPlan
 import org.apache.spark.sql.catalyst.util.StringUtils.PlanStringConcat
 import org.apache.spark.sql.execution.GlutenExplainUtils._
 import org.apache.spark.sql.execution.adaptive.{AdaptiveSparkPlanExec, CustomShuffleReaderExec, QueryStageExec}
@@ -100,7 +100,6 @@ object GlutenImplicits {
       def collect(tmp: QueryPlan[_]): Unit = {
         tmp.foreachUp {
           case _: ExecutedCommandExec =>
-          case _: CommandResultExec =>
           case _: V2CommandExec =>
           case _: DataWritingCommandExec =>
           case _: WholeStageCodegenExec =>
@@ -181,21 +180,21 @@ object GlutenImplicits {
         totalFallbackNodeToReason.append(fallbackNodeToReason)
       }
 
-      // For command-like query, e.g., `INSERT INTO TABLE ...`
-      qe.commandExecuted.foreach {
-        case r: CommandResult =>
-          handlePlanWithAQEAndTableCache(r.commandPhysicalPlan, r.commandLogicalPlan, true)
-        case _ => // ignore
-      }
+//      // For command-like query, e.g., `INSERT INTO TABLE ...`
+//      qe.commandExecuted.foreach {
+//        case r: CommandResult =>
+//          handlePlanWithAQEAndTableCache(r.commandPhysicalPlan, r.commandLogicalPlan, true)
+//        case _ => // ignore
+//      }
 
       // For query, e.g., `SELECT * FROM ...`
-      if (qe.executedPlan.find(_.isInstanceOf[CommandResultExec]).isEmpty) {
-        val isMaterialized = qe.executedPlan.find {
-          case a: AdaptiveSparkPlanExec if isFinalAdaptivePlan(a) => true
-          case _ => false
-        }.isDefined
-        handlePlanWithAQEAndTableCache(qe.executedPlan, qe.analyzed, isMaterialized)
-      }
+//      if (qe.executedPlan.find(_.isInstanceOf[CommandResultExec]).isEmpty) {
+      val isMaterialized = qe.executedPlan.find {
+        case a: AdaptiveSparkPlanExec if isFinalAdaptivePlan(a) => true
+        case _ => false
+      }.isDefined
+      handlePlanWithAQEAndTableCache(qe.executedPlan, qe.analyzed, isMaterialized)
+//      }
 
       FallbackSummary(
         totalNumGlutenNodes,
