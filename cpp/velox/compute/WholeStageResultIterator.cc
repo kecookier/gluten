@@ -88,9 +88,9 @@ WholeStageResultIterator::WholeStageResultIterator(
     const std::unordered_map<std::string, std::string>& confMap,
     const SparkTaskInfo& taskInfo)
     : veloxPlan_(planNode), confMap_(confMap), taskInfo_(taskInfo), memoryManager_(memoryManager) {
-#ifdef ENABLE_HDFS
-  updateHdfsTokens();
-#endif
+// #ifdef ENABLE_HDFS
+//   updateHdfsTokens();
+// #endif
   spillStrategy_ = getConfigValue(confMap_, kSpillStrategy, kSpillStrategyDefaultValue);
   getOrderedNodeIds(veloxPlan_, orderedNodeIds_);
 }
