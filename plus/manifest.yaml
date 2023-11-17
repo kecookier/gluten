@@ -15,12 +15,12 @@ build:
       - gcc --version
       - sh plus/plus_build.sh --enable_hdfs=ON --run_setup_script=OFF --enable_ep_cache=ON --enable_isal=ON
   target:
-    distDir: ./package/target
+    distDir: ./package
     files:
-      - ./gluten-package*SNAPSHOT.jar
-      - ../../plus/run.sh
+      - ./target
+      - ../plus/run.sh
 deploy:
-  targetDir: /opt/meituan/gluten-1.1.0/
+  targetDir: /opt/meituan/gluten/
   run:
     workDir: ./
     cmd:
