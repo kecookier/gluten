@@ -33,6 +33,7 @@ import org.apache.spark.sql.types._
 import org.apache.spark.util.collection.BitSet
 
 import com.google.common.collect.Lists
+import com.google.protobuf.{Any, Message}
 
 import java.util
 
@@ -226,4 +227,6 @@ class CHTransformerApi extends TransformerApi with Logging {
   override def getNativePlanString(substraitPlan: Array[Byte], details: Boolean): String = {
     throw new UnsupportedOperationException("CH backend does not support this method")
   }
+
+  override def getPackMessage(message: Message): Any = Any.pack(message)
 }

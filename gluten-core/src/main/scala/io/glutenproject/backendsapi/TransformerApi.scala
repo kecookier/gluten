@@ -25,6 +25,8 @@ import org.apache.spark.sql.execution.datasources.{HadoopFsRelation, PartitionDi
 import org.apache.spark.sql.types.DecimalType
 import org.apache.spark.util.collection.BitSet
 
+import com.google.protobuf.{Any, Message}
+
 import java.util
 
 trait TransformerApi {
@@ -71,4 +73,6 @@ trait TransformerApi {
       nullOnOverflow: Boolean): ExpressionNode
 
   def getNativePlanString(substraitPlan: Array[Byte], details: Boolean): String
+
+  def getPackMessage(message: Message): Any
 }
