@@ -94,6 +94,8 @@ class TransformerApiImpl extends TransformerApi with Logging {
         explode.child.dataType match {
           case _: MapType =>
             ValidationResult.notOk(s"Velox backend does not support MAP datatype")
+          case _: ArrayType =>
+            ValidationResult.notOk(s"Velox backend does not support Array datatype")
           case _ =>
             ValidationResult.ok
         }
