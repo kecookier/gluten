@@ -30,8 +30,6 @@ import org.apache.spark.sql.catalyst.expressions.Attribute
 import org.apache.spark.sql.execution.SparkPlan
 import org.apache.spark.sql.vectorized.ColumnarBatch
 
-import com.google.protobuf.Any
-
 import scala.collection.JavaConverters._
 
 case class LimitTransformer(child: SparkPlan, offset: Long, count: Long)
@@ -95,7 +93,8 @@ case class LimitTransformer(child: SparkPlan, offset: Long, count: Long)
       val inputTypeNodes =
         inputAttributes.map(attr => ConverterUtils.getTypeNode(attr.dataType, attr.nullable)).asJava
       val extensionNode = ExtensionBuilder.makeAdvancedExtension(
-        Any.pack(TypeBuilder.makeStruct(false, inputTypeNodes).toProtobuf))
+        BackendsApiManager.getTransformerApiInstance.packPBMessage(
+          TypeBuilder.makeStruct(false, inputTypeNodes).toProtobuf))
       RelBuilder.makeFetchRel(input, offset, count, extensionNode, context, operatorId)
     }
   }

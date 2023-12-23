@@ -99,7 +99,7 @@ case class WindowExecTransformer(
       .newBuilder()
       .setValue(windowParametersStr.toString)
       .build()
-    BackendsApiManager.getTransformerApiInstance.getPackMessage(message)
+    BackendsApiManager.getTransformerApiInstance.packPBMessage(message)
   }
 
   def getRelNode(
@@ -170,7 +170,8 @@ case class WindowExecTransformer(
         .map(attr => ConverterUtils.getTypeNode(attr.dataType, attr.nullable))
         .asJava
       val extensionNode = ExtensionBuilder.makeAdvancedExtension(
-        Any.pack(TypeBuilder.makeStruct(false, inputTypeNodeList).toProtobuf))
+        BackendsApiManager.getTransformerApiInstance.packPBMessage(
+          TypeBuilder.makeStruct(false, inputTypeNodeList).toProtobuf))
 
       RelBuilder.makeWindowRel(
         input,

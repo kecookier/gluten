@@ -32,8 +32,6 @@ import org.apache.spark.sql.catalyst.plans.physical.{Partitioning, UnknownPartit
 import org.apache.spark.sql.execution._
 import org.apache.spark.sql.vectorized.ColumnarBatch
 
-import com.google.protobuf.Any
-
 import java.util.{ArrayList => JArrayList, List => JList}
 
 import scala.collection.JavaConverters._
@@ -117,7 +115,8 @@ case class ExpandExecTransformer(
           inputTypeNodeList.add(ConverterUtils.getTypeNode(attr.dataType, attr.nullable))
         }
         val extensionNode = ExtensionBuilder.makeAdvancedExtension(
-          Any.pack(TypeBuilder.makeStruct(false, inputTypeNodeList).toProtobuf))
+          BackendsApiManager.getTransformerApiInstance.packPBMessage(
+            TypeBuilder.makeStruct(false, inputTypeNodeList).toProtobuf))
         RelBuilder.makeProjectRel(
           input,
           preExprNodes,
@@ -169,7 +168,8 @@ case class ExpandExecTransformer(
         }
 
         val extensionNode = ExtensionBuilder.makeAdvancedExtension(
-          Any.pack(TypeBuilder.makeStruct(false, inputTypeNodeList).toProtobuf))
+          BackendsApiManager.getTransformerApiInstance.packPBMessage(
+            TypeBuilder.makeStruct(false, inputTypeNodeList).toProtobuf))
         RelBuilder.makeExpandRel(input, projectSetExprNodes, extensionNode, context, operatorId)
       }
     }
