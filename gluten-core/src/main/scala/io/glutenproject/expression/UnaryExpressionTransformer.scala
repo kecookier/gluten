@@ -211,10 +211,10 @@ case class RandTransformer(
   extends ExpressionTransformer {
 
   override def doTransform(args: java.lang.Object): ExpressionNode = {
-    if (!original.hideSeed) {
-      // TODO: for user-specified seed, we need to pass partition index to native engine.
-      throw new UnsupportedOperationException("User-specified seed is not supported.")
-    }
+//    if (!original.hideSeed) {
+//      // TODO: for user-specified seed, we need to pass partition index to native engine.
+//      throw new UnsupportedOperationException("User-specified seed is not supported.")
+//    }
     val functionMap = args.asInstanceOf[java.util.HashMap[String, java.lang.Long]]
     val functionId = ExpressionBuilder.newScalarFunction(
       functionMap,

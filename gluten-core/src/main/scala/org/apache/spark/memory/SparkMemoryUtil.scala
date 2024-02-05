@@ -28,7 +28,7 @@ import org.apache.commons.lang3.StringUtils
 
 import java.util
 
-import scala.annotation.nowarn
+// import scala.annotation.nowarn
 import scala.collection.JavaConverters._
 
 object SparkMemoryUtil {
