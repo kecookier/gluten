@@ -222,9 +222,11 @@ macro(find_libhdfs3)
   if(libhdfs3_FOUND AND TARGET HDFS::hdfs3)
     set(LIBHDFS3_LIBRARY HDFS::hdfs3)
   else()
-    find_path(libhdfs3_INCLUDE_DIR hdfs/hdfs.h)
+    set(MEITUAN_LIBHDFS3_PATH "${VELOX_HOME}/third_party/mt-libhdfs")
+    find_path(libhdfs3_INCLUDE_DIR hdfs/hdfs.h HINTS "${MEITUAN_LIBHDFS3_PATH}/include" NO_DEFAULT_PATH)
+    message(STATUS "libhdfs3_INCLUDE_DIR=${libhdfs3_INCLUDE_DIR}")
     set(CMAKE_FIND_LIBRARY_SUFFIXES ".so")
-    find_library(libhdfs3_LIBRARY NAMES hdfs3)
+    find_library(libhdfs3_LIBRARY NAMES hdfs3 PATHS ${MEITUAN_LIBHDFS3_PATH} ${SYSTEM_LIB_PATH} ${SYSTEM_LIB64_PATH} ${SYSTEM_LIB_MULTIARCH_PATH} ${SYSTEM_LOCAL_LIB_PATH} ${SYSTEM_LOCAL_LIB64_PATH} NO_DEFAULT_PATH)
     find_package_handle_standard_args(libhdfs3 DEFAULT_MSG
       libhdfs3_INCLUDE_DIR
       libhdfs3_LIBRARY

@@ -53,6 +53,7 @@ const std::string kParquetCompressionCodec = "spark.sql.parquet.compression.code
 
 const std::string kUGIUserName = "spark.gluten.ugi.username";
 const std::string kUGITokens = "spark.gluten.ugi.tokens";
+const std::string kMeituanHdfsTokens = "spark.gluten.meituan.hdfs.tokens";
 
 const std::string kShuffleCompressionCodec = "spark.gluten.sql.columnar.shuffle.codec";
 const std::string kShuffleCompressionCodecBackend = "spark.gluten.sql.columnar.shuffle.codecBackend";

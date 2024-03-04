@@ -19,6 +19,7 @@ package io.glutenproject
 import org.apache.spark.internal.Logging
 import org.apache.spark.network.util.ByteUnit
 import org.apache.spark.sql.internal.SQLConf
+import org.apache.spark.token.MeituanTokenUtils
 
 import com.google.common.collect.ImmutableList
 import org.apache.hadoop.security.UserGroupInformation
@@ -409,6 +410,8 @@ object GlutenConfig {
   val GLUTEN_UGI_USERNAME = "spark.gluten.ugi.username"
   // Tokens of current user, split by `\0`
   val GLUTEN_UGI_TOKENS = "spark.gluten.ugi.tokens"
+  // Tokens of meituan hdfs authority
+  val GLUTEN_MEITUAN_HDFS_TOKENS = "spark.gluten.meituan.hdfs.tokens"
 
   var ins: GlutenConfig = _
 
@@ -469,6 +472,9 @@ object GlutenConfig {
         .map(_.encodeToUrlString)
         .mkString("\u0000"))
     nativeConfMap.put(GLUTEN_UGI_USERNAME, UserGroupInformation.getCurrentUser.getUserName)
+
+    // Set Meituan Tokens
+    nativeConfMap.put(GLUTEN_MEITUAN_HDFS_TOKENS, MeituanTokenUtils.getMeituanToken())
 
     // return
     nativeConfMap

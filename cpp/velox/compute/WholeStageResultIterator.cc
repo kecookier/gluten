@@ -88,9 +88,9 @@ WholeStageResultIterator::WholeStageResultIterator(
     const std::unordered_map<std::string, std::string>& confMap,
     const SparkTaskInfo& taskInfo)
     : veloxPlan_(planNode), confMap_(confMap), taskInfo_(taskInfo), memoryManager_(memoryManager) {
-// #ifdef ENABLE_HDFS
-//   updateHdfsTokens();
-// #endif
+#ifdef ENABLE_HDFS
+  updateHdfsTokens();
+#endif
   spillStrategy_ = getConfigValue(confMap_, kSpillStrategy, kSpillStrategyDefaultValue);
   getOrderedNodeIds(veloxPlan_, orderedNodeIds_);
 }
@@ -391,17 +391,12 @@ std::unordered_map<std::string, std::string> WholeStageResultIterator::getQueryC
 #ifdef ENABLE_HDFS
 void WholeStageResultIterator::updateHdfsTokens() {
   std::lock_guard lock{mutex};
-  const auto& username = confMap_[kUGIUserName];
-  const auto& allTokens = confMap_[kUGITokens];
-
-  if (username.empty() || allTokens.empty())
+  const auto& tokenStr = confMap_[kMeituanHdfsTokens];
+  LOG(INFO) << "Gluten updateHdfsTokens, length:" << tokenStr.length();
+  if (tokenStr.empty()) {
     return;
-
-  hdfsSetDefautUserName(username.c_str());
-  std::vector<folly::StringPiece> tokens;
-  folly::split('\0', allTokens, tokens);
-  for (auto& token : tokens)
-    hdfsSetTokenForDefaultUser(token.data());
+  }
+  hdfsSetAuthorityToken(tokenStr.c_str());
 }
 #endif
 

@@ -45,7 +45,7 @@
     <scala.version>2.12.10</scala.version>
     <spark.major.version>3</spark.major.version>
     <sparkbundle.version>3.0</sparkbundle.version>
-    <spark.version>3.0.2-gluten-1.0.1-SNAPSHOT</spark.version>
+    <spark.version>3.0.2-gluten-1.1.0-SNAPSHOT</spark.version>
     <sparkshim.artifactId>spark-sql-columnar-shims-spark30</sparkshim.artifactId>
 <!--    <celeborn.version>0.3.0-incubating</celeborn.version>-->
     <celeborn.version>0.2.1-incubating</celeborn.version>
@@ -108,7 +108,7 @@
       <properties>
         <sparkbundle.version>3.0</sparkbundle.version>
         <sparkshim.artifactId>spark-sql-columnar-shims-spark30</sparkshim.artifactId>
-        <spark.version>3.0.2-gluten-1.0.1-SNAPSHOT</spark.version>
+        <spark.version>3.0.2-gluten-1.1.0-SNAPSHOT</spark.version>
         <delta.version>2.0.1</delta.version>
         <delta.binary.version>20</delta.binary.version>
       </properties>
