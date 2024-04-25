@@ -17,7 +17,7 @@
 set -exu
 
 VELOX_REPO=ssh://git@git.sankuai.com/data/velox.git
-VELOX_BRANCH=update_from_20240424
+VELOX_BRANCH=mt-release-1.2.0
 VELOX_HOME=""
 
 #Set on run gluten on HDFS
