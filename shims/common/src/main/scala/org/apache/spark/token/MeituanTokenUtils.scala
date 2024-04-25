@@ -22,9 +22,17 @@ import org.apache.spark.internal.Logging
 object MeituanTokenUtils extends Logging {
 
   def getMeituanToken(): String = {
-    var tokenStr =
-      SparkEnv.get.tokenManager.asInstanceOf[ExecutorTokenManager].latestTokenToUrlString()
-    logInfo(s"Gluten set meituan hdfs token size:${tokenStr.length} value:[$tokenStr]")
-    tokenStr
+    SparkEnv.get.tokenManager match {
+      case manager: ExecutorTokenManager =>
+        val tokenStr = manager.latestTokenToUrlString()
+        logInfo(s"Gluten get meituan hdfs token size:${tokenStr.length} value:[$tokenStr]")
+        tokenStr
+      case _: DriverTokenManager =>
+        logInfo("Gluten get meituan hdfs token from driver, empty value")
+        ""
+      case _ =>
+        logWarning("Gluten get meituan hdfs token")
+        ""
+    }
   }
 }
