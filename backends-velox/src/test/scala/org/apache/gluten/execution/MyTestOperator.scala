@@ -16,6 +16,9 @@
  */
 package org.apache.gluten.execution
 
+import org.apache.gluten.GlutenConfig
+import org.apache.gluten.sql.shims.SparkShimLoader
+
 import org.apache.spark.SparkConf
 import org.apache.spark.sql.{AnalysisException, Row}
 import org.apache.spark.sql.execution.{FilterExec, GenerateExec, ProjectExec, RDDScanExec}
@@ -23,9 +26,6 @@ import org.apache.spark.sql.execution.window.WindowExec
 import org.apache.spark.sql.functions._
 import org.apache.spark.sql.internal.SQLConf
 import org.apache.spark.sql.types.{DecimalType, StringType, StructField, StructType}
-
-import org.apache.gluten.GlutenConfig
-import org.apache.gluten.sql.shims.SparkShimLoader
 
 import java.util.concurrent.TimeUnit
 
