@@ -17,16 +17,12 @@
 package org.apache.gluten.execution
 
 import org.apache.spark.SparkConf
-import org.apache.spark.sql.functions._
-import org.apache.spark.sql.types.DecimalType
 
 class MyTestOperator extends VeloxWholeStageTransformerSuite {
 
   protected val rootPath: String = getClass.getResource("/").getPath
   override protected val resourcePath: String = "/tpch-data-parquet-velox"
   override protected val fileFormat: String = "parquet"
-
-  import testImplicits._
 
   override def beforeAll(): Unit = {
     super.beforeAll()
@@ -45,7 +41,27 @@ class MyTestOperator extends VeloxWholeStageTransformerSuite {
   }
 
   test("zhaokuo decimal test") {
-    val df = spark.sql("select cast(100 as decimal(38, 10)) * cast(100 as decimal(38, 10))")
+    val df = spark.sql("select cast(100 as decimal(38, 10)) * cast(99999 as decimal(38, 10))")
+    val wholeStageTransformers = collect(df.queryExecution.executedPlan) {
+      case w: WholeStageTransformer => w
+    }
+    val nativePlanString = wholeStageTransformers.head.nativePlanString()
+    logWarning(s"NativePlan: $nativePlanString")
+    df.collect();
+  }
+
+  test("zhaokuo decimal test 2") {
+    val df = spark.sql("select cast(100 as decimal(38, 10)) * cast(99999 as decimal(38, 10)) * cast(99999 as decimal(38, 10))")
+    val wholeStageTransformers = collect(df.queryExecution.executedPlan) {
+      case w: WholeStageTransformer => w
+    }
+    val nativePlanString = wholeStageTransformers.head.nativePlanString()
+    logWarning(s"NativePlan: $nativePlanString")
+    df.collect();
+  }
+
+  test("zhaokuo decimal test 2") {
+    val df = spark.sql("select cast(100 as decimal(38, 10)) * cast(99999 as decimal(38, 10)) * cast(99999 as decimal(38, 10))")
     val wholeStageTransformers = collect(df.queryExecution.executedPlan) {
       case w: WholeStageTransformer => w
     }
