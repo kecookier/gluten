@@ -18,7 +18,7 @@ package org.apache.gluten.execution
 
 import org.apache.spark.SparkConf
 import org.apache.spark.sql.functions._
-import org.apache.spark.sql.types.{DecimalType, StringType, StructField, StructType}
+import org.apache.spark.sql.types.DecimalType
 
 class MyTestOperator extends VeloxWholeStageTransformerSuite {
 
