@@ -45,15 +45,12 @@ class MyTestOperator extends VeloxWholeStageTransformerSuite {
   }
 
   test("zhaokuo decimal test") {
-    val d = 100
-    val df = Seq(d).toDF("DecimalCol")
-    val result = df
-      .select($"DecimalCol".cast(DecimalType(38, 10)))
-      .select(col("DecimalCol") * col("DecimalCol"))
+    val df = spark.sql("select cast(100 as decimal(38, 10)) * cast(100 as decimal(38, 10))")
     val wholeStageTransformers = collect(df.queryExecution.executedPlan) {
       case w: WholeStageTransformer => w
     }
     val nativePlanString = wholeStageTransformers.head.nativePlanString()
     logWarning(s"NativePlan: $nativePlanString")
+    df.collect();
   }
 }
