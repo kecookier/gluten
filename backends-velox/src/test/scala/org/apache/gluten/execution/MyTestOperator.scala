@@ -40,28 +40,46 @@ class MyTestOperator extends VeloxWholeStageTransformerSuite {
       .set("spark.sql.sources.useV1SourceList", "avro,parquet")
   }
 
-  test("zhaokuo decimal test") {
-    val df = spark.sql("select cast(100 as decimal(38, 10)) * cast(99999 as decimal(38, 10))")
-    val wholeStageTransformers = collect(df.queryExecution.executedPlan) {
-      case w: WholeStageTransformer => w
+  test("decimal * decimal with allowPrecisionLoss=false") {
+    withSQLConf("spark.sql.decimalOperations.allowPrecisionLoss" -> "false") {
+      val df = spark.sql("select cast(100 as decimal(38, 10)) * cast(99999 as decimal(38, 10))")
+      val wholeStageTransformers = collect(df.queryExecution.executedPlan) {
+        case w: WholeStageTransformer => w
+      }
+      val nativePlanString = wholeStageTransformers.head.nativePlanString()
+      logWarning(s"NativePlan: $nativePlanString")
+      df.collect();
     }
-    val nativePlanString = wholeStageTransformers.head.nativePlanString()
-    logWarning(s"NativePlan: $nativePlanString")
-    df.collect();
   }
 
-  test("zhaokuo decimal test 2") {
-    val df = spark.sql("select cast(100 as decimal(38, 10)) * cast(99999 as decimal(38, 10)) * cast(99999 as decimal(38, 10))")
-    val wholeStageTransformers = collect(df.queryExecution.executedPlan) {
-      case w: WholeStageTransformer => w
+  test("decimal * decimal with allowPrecisionLoss=true") {
+    withSQLConf("spark.sql.decimalOperations.allowPrecisionLoss" -> "true") {
+      val df = spark.sql("select cast(100 as decimal(38, 10)) * cast(99999 as decimal(38, 10))")
+      val wholeStageTransformers = collect(df.queryExecution.executedPlan) {
+        case w: WholeStageTransformer => w
+      }
+      val nativePlanString = wholeStageTransformers.head.nativePlanString()
+      logWarning(s"NativePlan: $nativePlanString")
+      df.collect();
     }
-    val nativePlanString = wholeStageTransformers.head.nativePlanString()
-    logWarning(s"NativePlan: $nativePlanString")
-    df.collect();
   }
 
-  test("zhaokuo decimal test 2") {
-    val df = spark.sql("select cast(100 as decimal(38, 10)) * cast(99999 as decimal(38, 10)) * cast(99999 as decimal(38, 10))")
+  test("decimal * decimal*decimal with allowPrecisionLoss=false") {
+    withSQLConf("spark.sql.decimalOperations.allowPrecisionLoss" -> "false") {
+      val df = spark.sql(
+        "select cast(100 as decimal(38, 10)) * cast(99999 as decimal(38, 10)) * cast(99999 as decimal(38, 10))")
+      val wholeStageTransformers = collect(df.queryExecution.executedPlan) {
+        case w: WholeStageTransformer => w
+      }
+      val nativePlanString = wholeStageTransformers.head.nativePlanString()
+      logWarning(s"NativePlan: $nativePlanString")
+      df.collect();
+    }
+  }
+
+  test("decimal * decimal*decimal with allowPrecisionLoss=false") {
+    val df = spark.sql(
+      "select cast(100 as decimal(38, 10)) * cast(99999 as decimal(38, 10)) * cast(99999 as decimal(38, 10))")
     val wholeStageTransformers = collect(df.queryExecution.executedPlan) {
       case w: WholeStageTransformer => w
     }
