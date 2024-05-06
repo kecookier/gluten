@@ -67,7 +67,8 @@ class MyTestOperator extends VeloxWholeStageTransformerSuite {
   test("decimal * decimal*decimal with allowPrecisionLoss=false") {
     withSQLConf("spark.sql.decimalOperations.allowPrecisionLoss" -> "false") {
       val df = spark.sql(
-        "select cast(100 as decimal(38, 10)) * cast(99999 as decimal(38, 10)) * cast(99999 as decimal(38, 10))")
+        "select cast(100 as decimal(38, 10)) * cast(99999 as decimal(38, 10)) *" +
+          " cast(99999 as decimal(38, 10))")
       val wholeStageTransformers = collect(df.queryExecution.executedPlan) {
         case w: WholeStageTransformer => w
       }
@@ -79,7 +80,8 @@ class MyTestOperator extends VeloxWholeStageTransformerSuite {
 
   test("decimal * decimal*decimal with allowPrecisionLoss=false") {
     val df = spark.sql(
-      "select cast(100 as decimal(38, 10)) * cast(99999 as decimal(38, 10)) * cast(99999 as decimal(38, 10))")
+      "select cast(100 as decimal(38, 10)) * cast(99999 as decimal(38, 10)) * " +
+        "cast(99999 as decimal(38, 10))")
     val wholeStageTransformers = collect(df.queryExecution.executedPlan) {
       case w: WholeStageTransformer => w
     }
