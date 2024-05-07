@@ -48,8 +48,7 @@ class MyTestOperator extends VeloxWholeStageTransformerSuite {
       }
       val nativePlanString = wholeStageTransformers.head.nativePlanString()
       logWarning(s"NativePlan: $nativePlanString")
-      val expected = df.collect()
-      logWarning(s"expected: ${expected.toString}");
+      logWarning(s"expected: ${df.toString}");
     }
   }
 
