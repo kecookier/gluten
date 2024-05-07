@@ -48,7 +48,8 @@ class MyTestOperator extends VeloxWholeStageTransformerSuite {
       }
       val nativePlanString = wholeStageTransformers.head.nativePlanString()
       logWarning(s"NativePlan: $nativePlanString")
-      df.collect();
+      val expected = df.collect()
+      logWarning(s"expected: $expected");
     }
   }
 
@@ -60,7 +61,8 @@ class MyTestOperator extends VeloxWholeStageTransformerSuite {
       }
       val nativePlanString = wholeStageTransformers.head.nativePlanString()
       logWarning(s"NativePlan: $nativePlanString")
-      df.collect();
+      val expected = df.collect()
+      logWarning(s"expected: $expected")
     }
   }
 
@@ -74,7 +76,8 @@ class MyTestOperator extends VeloxWholeStageTransformerSuite {
       }
       val nativePlanString = wholeStageTransformers.head.nativePlanString()
       logWarning(s"NativePlan: $nativePlanString")
-      df.collect();
+      val expected = df.collect()
+      logWarning(s"expected: $expected")
     }
   }
 
@@ -87,6 +90,7 @@ class MyTestOperator extends VeloxWholeStageTransformerSuite {
     }
     val nativePlanString = wholeStageTransformers.head.nativePlanString()
     logWarning(s"NativePlan: $nativePlanString")
-    df.collect();
+    val expected = df.collect()
+    logWarning(s"expected: $expected")
   }
 }
