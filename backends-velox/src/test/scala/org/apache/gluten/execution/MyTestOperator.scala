@@ -78,7 +78,7 @@ class MyTestOperator extends VeloxWholeStageTransformerSuite {
     }
   }
 
-  test("decimal * decimal*decimal with allowPrecisionLoss=false") {
+  test("decimal * decimal*decimal with allowPrecisionLoss=true") {
     val df = spark.sql(
       "select cast(100 as decimal(38, 10)) * cast(99999 as decimal(38, 10)) * " +
         "cast(99999 as decimal(38, 10))")
