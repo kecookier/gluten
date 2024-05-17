@@ -690,6 +690,9 @@ arrow::Status VeloxShuffleWriter::splitFixedWidthValueBuffer(const facebook::vel
     const auto& dstAddrs = partitionFixedWidthValueAddrs_[col];
 
     switch (arrow::bit_width(arrowColumnTypes_[colIdx]->id())) {
+      case 0: // arrow::NullType::type_id:
+        // No value buffer created for NullType.
+        break;
       case 1: // arrow::BooleanType::type_id:
         RETURN_NOT_OK(splitBoolType(srcAddr, dstAddrs));
         break;
@@ -1055,6 +1058,8 @@ arrow::Status VeloxShuffleWriter::splitFixedWidthValueBuffer(const facebook::vel
           complexNames.emplace_back(veloxColumnTypes_[i]->name());
           complexChildrens.emplace_back(veloxColumnTypes_[i]);
         } break;
+        case arrow::NullType::type_id:
+          break;
         default:
           simpleColumnIndices_.push_back(i);
           break;
@@ -1203,6 +1208,9 @@ arrow::Status VeloxShuffleWriter::splitFixedWidthValueBuffer(const facebook::vel
           partitionBinaryAddrs_[binaryIdx][partitionId] =
               BinaryBuf(valueBuffer->mutable_data(), lengthBuffer->mutable_data(), valueBufferSize);
           buffers = {std::move(validityBuffer), std::move(lengthBuffer), std::move(valueBuffer)};
+          break;
+        }
+        case arrow::NullType::type_id: {
           break;
         }
         default: { // fixed-width types
@@ -1522,6 +1530,8 @@ arrow::Status VeloxShuffleWriter::splitFixedWidthValueBuffer(const facebook::vel
               BinaryBuf(valueBuffer->mutable_data(), lengthBuffer->mutable_data(), valueBufferSize, valueOffset);
           break;
         }
+        case arrow::NullType::type_id:
+          break;
         default: { // fixed-width types
           auto& valueBuffer = buffers[kFixedWidthValueBufferIndex];
           ARROW_RETURN_IF(!valueBuffer, arrow::Status::Invalid("Value buffer of fixed-width array is null."));

@@ -26,7 +26,7 @@ import io.glutenproject.vectorized.NativePlanEvaluator
 import org.apache.spark.sql.catalyst.expressions.{CreateMap, Explode, Expression, Generator, JsonTuple, Literal, PosExplode}
 import org.apache.spark.sql.catalyst.plans.physical.Partitioning
 import org.apache.spark.sql.execution.SparkPlan
-import org.apache.spark.sql.types.{ArrayType, BinaryType, BooleanType, ByteType, DataType, DateType, DecimalType, DoubleType, FloatType, IntegerType, LongType, MapType, ShortType, StringType, StructType, TimestampType}
+import org.apache.spark.sql.types.{ArrayType, BinaryType, BooleanType, ByteType, DataType, DateType, DecimalType, DoubleType, FloatType, IntegerType, LongType, MapType, NullType, ShortType, StringType, StructType, TimestampType}
 
 class ValidatorApiImpl extends ValidatorApi {
 
@@ -45,27 +45,17 @@ class ValidatorApiImpl extends ValidatorApi {
 
   override def doSparkPlanValidate(plan: SparkPlan): Boolean = true
 
-  private def primitiveTypeValidate(dataType: DataType): Boolean = {
+  private def isPrimitiveType(dataType: DataType): Boolean = {
     dataType match {
-      case _: BooleanType =>
-      case _: ByteType =>
-      case _: ShortType =>
-      case _: IntegerType =>
-      case _: LongType =>
-      case _: FloatType =>
-      case _: DoubleType =>
-      case _: StringType =>
-      case _: BinaryType =>
-      case _: DecimalType =>
-      case _: DateType =>
-      case _: TimestampType =>
-      case _ => return false
+      case BooleanType | ByteType | ShortType | IntegerType | LongType | FloatType | DoubleType |
+          StringType | BinaryType | _: DecimalType | DateType | TimestampType | NullType =>
+        true
+      case _ => false
     }
-    true
   }
 
   override def doSchemaValidate(schema: DataType): Option[String] = {
-    if (primitiveTypeValidate(schema)) {
+    if (isPrimitiveType(schema)) {
       return None
     }
     schema match {

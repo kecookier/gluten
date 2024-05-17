@@ -72,6 +72,11 @@ Timestamp getLiteralValue(const ::substrait::Expression::Literal& literal) {
   return Timestamp::fromMicros(literal.timestamp());
 }
 
+template <>
+facebook::velox::UnknownValue getLiteralValue(const substrait::Expression_Literal& literal) {
+  return UnknownValue();
+}
+
 ArrayVectorPtr makeArrayVector(const VectorPtr& elements) {
   BufferPtr offsets = allocateOffsets(1, elements->pool());
   BufferPtr sizes = allocateOffsets(1, elements->pool());
