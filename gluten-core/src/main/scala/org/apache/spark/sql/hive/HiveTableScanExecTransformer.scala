@@ -42,6 +42,7 @@ import org.apache.spark.sql.types.{StructField, StructType}
 import org.apache.spark.sql.util.CaseInsensitiveStringMap
 import org.apache.spark.sql.vectorized.ColumnarBatch
 import org.apache.spark.util.Utils
+import com.meituan.hidi.hadoop.inputformat.HidiInputFormat
 
 import org.apache.hadoop.mapred.TextInputFormat
 
@@ -171,6 +172,9 @@ class HiveTableScanExecTransformer(
 //      case Some(inputFormat)
 //          if PARQUET_INPUT_FORMAT_CLASS.isAssignableFrom(Utils.classForName(inputFormat)) =>
 //        ReadFileFormat.ParquetReadFormat
+      case Some(inputFormat)
+        if HIDI_INPUT_FORMAT_CLASS.isAssignableFrom(Utils.classForName(inputFormat)) =>
+        ReadFileFormat.HidiReadFormat
       case _ => ReadFileFormat.UnknownFormat
     }
   }
@@ -259,6 +263,8 @@ object HiveTableScanExecTransformer {
 //    Utils.classForName("org.apache.hadoop.hive.ql.io.orc.OrcInputFormat")
 //  val PARQUET_INPUT_FORMAT_CLASS: Class[MapredParquetInputFormat] =
 //    Utils.classForName("org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat")
+  val HIDI_INPUT_FORMAT_CLASS: Class[HidiInputFormat] = Utils.classForName("com.meituan.hidi.hadoop.inputformat.HidiInputForma")
+
   def isHiveTableScan(plan: SparkPlan): Boolean = {
     plan.isInstanceOf[HiveTableScanExec]
   }

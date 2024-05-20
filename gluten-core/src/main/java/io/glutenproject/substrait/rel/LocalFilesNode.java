@@ -46,6 +46,7 @@ public class LocalFilesNode implements SplitInfo {
     MergeTreeReadFormat(),
     TextReadFormat(),
     JsonReadFormat(),
+    HidiReadFormat(),
     UnknownFormat()
   }
 
@@ -184,6 +185,11 @@ public class LocalFilesNode implements SplitInfo {
                   .setMaxBlockSize(GlutenConfig.getConf().textInputMaxBlockSize())
                   .build();
           fileBuilder.setJson(jsonReadOptions);
+          break;
+        case HidiReadFormat:
+          ReadRel.LocalFiles.FileOrFiles.HidiReadOptions hidiReadOptions =
+                  ReadRel.LocalFiles.FileOrFiles.HidiReadOptions.newBuilder().build();
+          fileBuilder.setHidi(hidiReadOptions);
           break;
         default:
           break;

@@ -135,6 +135,9 @@ message ReadRel {
       message ArrowReadOptions {}
       message OrcReadOptions {}
       message DwrfReadOptions {}
+      message HidiReadOptions {
+        bool compact_values = 1;
+      }
       message TextReadOptions {
         string field_delimiter = 1;
         uint64 max_block_size = 2;
@@ -159,16 +162,17 @@ message ReadRel {
         DwrfReadOptions dwrf = 13;
         TextReadOptions text = 14;
         JsonReadOptions json = 15;
+        HidiReadOptions hidi = 16;
      }
 
      message partitionColumn {
         string key = 1;
         string value = 2;
      }
-     repeated partitionColumn partition_columns = 16;
+     repeated partitionColumn partition_columns = 17;
 
      /// File schema
-     NamedStruct schema = 17;
+     NamedStruct schema = 18;
     }
   }
 }
