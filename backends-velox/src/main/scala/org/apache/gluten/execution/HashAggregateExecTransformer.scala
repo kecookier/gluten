@@ -16,6 +16,14 @@
  */
 package org.apache.gluten.execution
 
+import org.apache.spark.sql.catalyst.expressions._
+import org.apache.spark.sql.catalyst.expressions.aggregate._
+import org.apache.spark.sql.execution._
+import org.apache.spark.sql.expression.UserDefinedAggregateFunction
+import org.apache.spark.sql.internal.SQLConf
+import org.apache.spark.sql.types._
+
+import com.google.protobuf.StringValue
 import org.apache.gluten.backendsapi.BackendsApiManager
 import org.apache.gluten.exception.GlutenNotSupportException
 import org.apache.gluten.expression._
@@ -27,15 +35,6 @@ import org.apache.gluten.substrait.expression.{AggregateFunctionNode, Expression
 import org.apache.gluten.substrait.extensions.{AdvancedExtensionNode, ExtensionBuilder}
 import org.apache.gluten.substrait.rel.{RelBuilder, RelNode}
 import org.apache.gluten.utils.VeloxIntermediateData
-
-import org.apache.spark.sql.catalyst.expressions._
-import org.apache.spark.sql.catalyst.expressions.aggregate._
-import org.apache.spark.sql.execution._
-import org.apache.spark.sql.expression.UserDefinedAggregateFunction
-import org.apache.spark.sql.internal.SQLConf
-import org.apache.spark.sql.types._
-
-import com.google.protobuf.StringValue
 
 import java.lang.{Long => JLong}
 import java.util.{ArrayList => JArrayList, HashMap => JHashMap, List => JList}
@@ -578,6 +577,14 @@ abstract class HashAggregateExecTransformer(
           val aggBufferAttrsWithSameName = aggregateExpressions.toIndexedSeq
             .flatMap(_.aggregateFunction.inputAggBufferAttributes)
             .filter(_.name == attr.name)
+
+          if (attrsWithSameName.size != aggBufferAttrsWithSameName.size) {
+            logWarning(
+              s"[zhaokuo] attrsWithSameName.size(${attrsWithSameName.size}) != " +
+                s"aggBufferAttrsWithSameName.size(${aggBufferAttrsWithSameName.size})," +
+                s"attr.name=${attr.name}")
+          }
+
           assert(
             attrsWithSameName.size == aggBufferAttrsWithSameName.size,
             "The attribute with the same name in final agg inputAggBufferAttribute must" +
