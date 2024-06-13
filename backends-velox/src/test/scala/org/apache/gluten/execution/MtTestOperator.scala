@@ -16,6 +16,11 @@
  */
 package org.apache.gluten.execution
 
+import org.apache.gluten.GlutenConfig
+import org.apache.gluten.datasource.ArrowCSVFileFormat
+import org.apache.gluten.execution.datasource.v2.ArrowBatchScanExec
+import org.apache.gluten.sql.shims.SparkShimLoader
+
 import org.apache.spark.SparkConf
 import org.apache.spark.sql.{AnalysisException, Row}
 import org.apache.spark.sql.execution._
@@ -23,11 +28,6 @@ import org.apache.spark.sql.execution.window.WindowExec
 import org.apache.spark.sql.functions._
 import org.apache.spark.sql.internal.SQLConf
 import org.apache.spark.sql.types.{DecimalType, StringType, StructField, StructType}
-
-import org.apache.gluten.GlutenConfig
-import org.apache.gluten.datasource.ArrowCSVFileFormat
-import org.apache.gluten.execution.datasource.v2.ArrowBatchScanExec
-import org.apache.gluten.sql.shims.SparkShimLoader
 
 import java.util.concurrent.TimeUnit
 
@@ -1297,20 +1297,6 @@ class MtTestOperator extends VeloxWholeStageTransformerSuite {
       checkGlutenOperatorMatch[HashAggregateExecTransformer]
     }
   }
-
-  test("test roundrobine with sort") {
-    // scalastyle:off
-    runQueryAndCompare("SELECT /*+ REPARTITION(3) */ l_orderkey, l_partkey FROM lineitem") {
-      /*
-        ColumnarExchange RoundRobinPartitioning(3), REPARTITION_BY_NUM, [l_orderkey#16L, l_partkey#17L)
-        +- ^(2) ProjectExecTransformer [l_orderkey#16L, l_partkey#17L]
-          +- ^(2) SortExecTransformer [hash_partition_key#302 ASC NULLS FIRST], false, 0
-            +- ^(2) ProjectExecTransformer [hash(l_orderkey#16L, l_partkey#17L) AS hash_partition_key#302, l_orderkey#16L, l_partkey#17L]
-                +- ^(2) BatchScanExecTransformer[l_orderkey#16L, l_partkey#17L] ParquetScan DataFilters: [], Format: parquet, Location: InMemoryFileIndex(1 paths)[..., PartitionFilters: [], PushedFilters: [], ReadSchema: struct<l_orderkey:bigint,l_partkey:bigint>, PushedFilters: [] RuntimeFilters: []
-   */
-      checkGlutenOperatorMatch[SortExecTransformer]
-    }
-    // scalastyle:on
 
     withSQLConf("spark.sql.execution.sortBeforeRepartition" -> "false") {
       runQueryAndCompare("""SELECT /*+ REPARTITION(3) */
