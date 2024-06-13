@@ -16,17 +16,15 @@
  */
 package org.apache.gluten.execution
 
-import org.apache.spark.SparkConf
-
 import org.apache.gluten.GlutenConfig
+
+import org.apache.spark.SparkConf
 
 class MtTestOperator extends VeloxWholeStageTransformerSuite {
 
   protected val rootPath: String = getClass.getResource("/").getPath
   override protected val resourcePath: String = "/tpch-data-parquet-velox"
   override protected val fileFormat: String = "parquet"
-
-  import testImplicits._
 
   override def beforeAll(): Unit = {
     super.beforeAll()
