@@ -16,9 +16,9 @@
  */
 package org.apache.gluten.execution
 
-import org.apache.spark.SparkConf
-
 import org.apache.gluten.GlutenConfig
+
+import org.apache.spark.SparkConf
 
 class MtTestOperator extends VeloxWholeStageTransformerSuite {
 

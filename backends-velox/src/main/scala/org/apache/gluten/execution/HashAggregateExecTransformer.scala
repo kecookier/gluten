@@ -16,14 +16,6 @@
  */
 package org.apache.gluten.execution
 
-import org.apache.spark.sql.catalyst.expressions._
-import org.apache.spark.sql.catalyst.expressions.aggregate._
-import org.apache.spark.sql.execution._
-import org.apache.spark.sql.expression.UserDefinedAggregateFunction
-import org.apache.spark.sql.internal.SQLConf
-import org.apache.spark.sql.types._
-
-import com.google.protobuf.StringValue
 import org.apache.gluten.backendsapi.BackendsApiManager
 import org.apache.gluten.exception.GlutenNotSupportException
 import org.apache.gluten.expression._
@@ -35,6 +27,15 @@ import org.apache.gluten.substrait.expression.{AggregateFunctionNode, Expression
 import org.apache.gluten.substrait.extensions.{AdvancedExtensionNode, ExtensionBuilder}
 import org.apache.gluten.substrait.rel.{RelBuilder, RelNode}
 import org.apache.gluten.utils.VeloxIntermediateData
+
+import org.apache.spark.sql.catalyst.expressions._
+import org.apache.spark.sql.catalyst.expressions.aggregate._
+import org.apache.spark.sql.execution._
+import org.apache.spark.sql.expression.UserDefinedAggregateFunction
+import org.apache.spark.sql.internal.SQLConf
+import org.apache.spark.sql.types._
+
+import com.google.protobuf.StringValue
 
 import java.lang.{Long => JLong}
 import java.util.{ArrayList => JArrayList, HashMap => JHashMap, List => JList}
@@ -356,8 +357,7 @@ abstract class HashAggregateExecTransformer(
             .doTransform(args))
       })
 
-    logWarning(
-      s"[zhaokuo] getAggRelWithRowConstruct aggregateExpressions:${aggregateExpressions.toString()}")
+    logWarning(s"[zhaokuo]getAggRelWithRowConstruct aggregateExpressions:${aggregateExpressions.toString()}")
 
     for (aggregateExpression <- aggregateExpressions) {
       val aggFunc = aggregateExpression.aggregateFunction
