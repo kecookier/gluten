@@ -16,22 +16,9 @@
  */
 package org.apache.gluten.execution
 
-import org.apache.gluten.GlutenConfig
-import org.apache.gluten.datasource.ArrowCSVFileFormat
-import org.apache.gluten.execution.datasource.v2.ArrowBatchScanExec
-import org.apache.gluten.sql.shims.SparkShimLoader
-
 import org.apache.spark.SparkConf
-import org.apache.spark.sql.{AnalysisException, Row}
-import org.apache.spark.sql.execution._
-import org.apache.spark.sql.execution.window.WindowExec
-import org.apache.spark.sql.functions._
-import org.apache.spark.sql.internal.SQLConf
-import org.apache.spark.sql.types.{DecimalType, StringType, StructField, StructType}
 
-import java.util.concurrent.TimeUnit
-
-import scala.collection.JavaConverters
+import org.apache.gluten.GlutenConfig
 
 class MtTestOperator extends VeloxWholeStageTransformerSuite {
 
