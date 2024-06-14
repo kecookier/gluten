@@ -17,7 +17,7 @@
 package io.glutenproject.execution
 
 import org.apache.spark.SparkConf
-import org.apache.spark.sql.{AnalysisException, DataFrame, Row}
+import org.apache.spark.sql.DataFrame
 import org.apache.spark.sql.execution.adaptive.AdaptiveSparkPlanHelper
 
 class MtTestOperator extends VeloxWholeStageTransformerSuite with AdaptiveSparkPlanHelper {
@@ -26,8 +26,6 @@ class MtTestOperator extends VeloxWholeStageTransformerSuite with AdaptiveSparkP
   override protected val backend: String = "velox"
   override protected val resourcePath: String = "/tpch-data-parquet-velox"
   override protected val fileFormat: String = "parquet"
-
-  import testImplicits._
 
   override def beforeAll(): Unit = {
     super.beforeAll()
