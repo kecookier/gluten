@@ -362,7 +362,9 @@ abstract class HashAggregateExecTransformer(
             .replaceWithExpressionTransformer(expr, originalInputAttributes)
             .doTransform(args))
       })
-
+    logWarning(
+      s"[zhaokuo]getAggRelWithRowConstruct " +
+        s"aggregateExpressions:${aggregateExpressions.toString()}")
     for (aggregateExpression <- aggregateExpressions) {
       val aggFunc = aggregateExpression.aggregateFunction
       val functionInputAttributes = aggFunc.inputAggBufferAttributes
@@ -381,6 +383,10 @@ abstract class HashAggregateExecTransformer(
           throw new UnsupportedOperationException("Only one input attribute is expected.")
 
         case _ @VeloxIntermediateData.Type(veloxTypes: Seq[DataType]) =>
+          logWarning(
+            s"[zhaokuo] getAggRelWithRowConstruct aggFunc:${aggFunc.toString()}" +
+              s"functionInputAttributes:${functionInputAttributes.toString()}" +
+              s" originalInputAttributes:${originalInputAttributes.toString()}")
           val rewrittenInputAttributes =
             rewriteAggBufferAttributes(functionInputAttributes, originalInputAttributes)
           // The process of handling the inconsistency in column types and order between
@@ -569,6 +575,10 @@ abstract class HashAggregateExecTransformer(
           val aggBufferAttrsWithSameName = aggregateExpressions.toIndexedSeq
             .flatMap(_.aggregateFunction.inputAggBufferAttributes)
             .filter(_.name == attr.name)
+          logWarning(
+            s"[zhaokuo] attrsWithSameName.size(${attrsWithSameName.size}) != " +
+              s"aggBufferAttrsWithSameName.size(${aggBufferAttrsWithSameName.size})," +
+              s"attr.name=${attr.name}")
           assert(
             attrsWithSameName.size == aggBufferAttrsWithSameName.size,
             "The attribute with the same name in final agg inputAggBufferAttribute must" +
