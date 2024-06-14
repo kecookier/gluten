@@ -330,6 +330,7 @@ fi
 echo "Target Velox build: $TARGET_BUILD_SUMMARY"
 
 check_commit
+source ${CURRENT_DIR}/get_arrow_depends.sh
 compile
 
 if [ $COMPILE_ARROW_JAVA == "ON" ]; then
