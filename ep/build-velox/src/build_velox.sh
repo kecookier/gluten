@@ -266,6 +266,7 @@ echo "Target Velox commit: $TARGET_BUILD_COMMIT"
 
 check_commit
 apply_compilation_fixes $CURRENT_DIR $VELOX_HOME
+source ${CURRENT_DIR}/get_arrow_depends.sh
 compile
 
 echo "Successfully built Velox from Source."
