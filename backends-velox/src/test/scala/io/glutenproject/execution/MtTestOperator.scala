@@ -41,7 +41,7 @@ class MtTestOperator extends VeloxWholeStageTransformerSuite with AdaptiveSparkP
       .set("spark.unsafe.exceptionOnMemoryLeak", "true")
       .set("spark.sql.autoBroadcastJoinThreshold", "-1")
       .set("spark.sql.sources.useV1SourceList", "avro")
-      .set("spark.gluten.sql.transform.logLevel", "INFO")
+      .set("spark.gluten.sql.transform.logLevel", "WARN")
   }
 
   private def checkFallbackOperators(df: DataFrame, num: Int): Unit = {
