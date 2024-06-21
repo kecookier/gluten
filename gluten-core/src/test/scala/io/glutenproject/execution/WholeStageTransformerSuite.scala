@@ -252,6 +252,7 @@ abstract class WholeStageTransformerSuite extends GlutenQueryTest with SharedSpa
     withSQLConf(vanillaSparkConfs(): _*) {
       val df = spark.sql(sqlStr)
       expected = df.collect()
+      logWarning(s"[zhaokuo] vanilla plan: ${df.queryExecution.executedPlan.treeString}")
     }
     val df = spark.sql(sqlStr)
     if (cache) {
@@ -263,6 +264,7 @@ abstract class WholeStageTransformerSuite extends GlutenQueryTest with SharedSpa
       } else {
         df.collect()
       }
+      logWarning(s"[zhaokuo] gluten spark plan: ${df.queryExecution.executedPlan.treeString}")
     } finally {
       if (cache) {
         df.unpersist()
