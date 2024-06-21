@@ -600,6 +600,8 @@ class TestOperator extends VeloxWholeStageTransformerSuite with AdaptiveSparkPla
         val wholeStageTransformers = collect(df.queryExecution.executedPlan) {
           case w: WholeStageTransformer => w
         }
+        logWarning(
+          s"[zhaokuo] ${wholeStageTransformers.map(s => s.nativePlanString()).mkString(";")}")
         val nativePlanString = wholeStageTransformers.head.nativePlanString()
         assert(nativePlanString.contains("Aggregation[FINAL"))
         assert(nativePlanString.contains("Aggregation[PARTIAL"))
