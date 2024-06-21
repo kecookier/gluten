@@ -50,7 +50,7 @@ class TestOperator extends VeloxWholeStageTransformerSuite with AdaptiveSparkPla
       .set("spark.memory.offHeap.size", "2g")
       .set("spark.unsafe.exceptionOnMemoryLeak", "true")
       .set("spark.sql.autoBroadcastJoinThreshold", "-1")
-      .set("spark.sql.sources.useV1SourceList", "avro")
+//      .set("spark.sql.sources.useV1SourceList", "avro")
   }
 
   test("simple_select") {
