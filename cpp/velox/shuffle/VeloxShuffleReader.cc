@@ -1029,8 +1029,7 @@ std::streampos VeloxRssSortShuffleReaderDeserializer::VeloxInputStream::tellp() 
   if (ranges_.empty()) {
     return 0;
   }
-  return static_cast<std::streampos>(
-      static_cast<int64_t>(totalBytesRead_) - (ranges_[0].size - ranges_[0].position));
+  return static_cast<std::streampos>(static_cast<int64_t>(totalBytesRead_) - (ranges_[0].size - ranges_[0].position));
 }
 
 void VeloxRssSortShuffleReaderDeserializer::VeloxInputStream::seekp(std::streampos position) {
@@ -1053,9 +1052,9 @@ void VeloxRssSortShuffleReaderDeserializer::VeloxInputStream::seekp(std::streamp
 }
 
 RowVectorPtr VeloxRssSortShuffleReaderDeserializer::readPage() {
-  using facebook::velox::serializer::presto::detail::PrestoHeader;
   using facebook::velox::serializer::presto::detail::kCompressedBitMask;
   using facebook::velox::serializer::presto::detail::kHeaderSize;
+  using facebook::velox::serializer::presto::detail::PrestoHeader;
   constexpr int32_t kPrestoHeaderSize = kHeaderSize;
 
   // Fast path: peek the header without consuming; if the whole page fits in
@@ -1064,19 +1063,14 @@ RowVectorPtr VeloxRssSortShuffleReaderDeserializer::readPage() {
     std::string_view window(reinterpret_cast<const char*>(in_->data()), in_->remainingInWindow());
     auto peekedHeader = PrestoHeader::read(&window);
     if (peekedHeader.has_value()) {
-      const int32_t payloadSize =
-          (peekedHeader->pageCodecMarker & kCompressedBitMask) != 0 ? peekedHeader->compressedSize
-                                                                    : peekedHeader->uncompressedSize;
+      const int32_t payloadSize = (peekedHeader->pageCodecMarker & kCompressedBitMask) != 0
+          ? peekedHeader->compressedSize
+          : peekedHeader->uncompressedSize;
       const int64_t totalSize = kPrestoHeaderSize + static_cast<int64_t>(payloadSize);
       if (totalSize <= in_->remainingInWindow()) {
         RowVectorPtr rowVector;
         VectorStreamGroup::read(
-            in_.get(),
-            memoryManager_->getLeafMemoryPool().get(),
-            rowType_,
-            serde_,
-            &rowVector,
-            &serdeOptions_);
+            in_.get(), memoryManager_->getLeafMemoryPool().get(), rowType_, serde_, &rowVector, &serdeOptions_);
         return rowVector;
       }
     }
@@ -1099,8 +1093,7 @@ RowVectorPtr VeloxRssSortShuffleReaderDeserializer::readPage() {
   if (payloadSize <= in_->remainingInWindow()) {
     in_->advance(payloadSize);
     BufferInputStream pageStream(std::vector<ByteRange>{
-        ByteRange{headerStorage.data(), kPrestoHeaderSize, 0},
-        ByteRange{in_->data() - payloadSize, payloadSize, 0}});
+        ByteRange{headerStorage.data(), kPrestoHeaderSize, 0}, ByteRange{in_->data() - payloadSize, payloadSize, 0}});
     RowVectorPtr rowVector;
     VectorStreamGroup::read(
         &pageStream, memoryManager_->getLeafMemoryPool().get(), rowType_, serde_, &rowVector, &serdeOptions_);

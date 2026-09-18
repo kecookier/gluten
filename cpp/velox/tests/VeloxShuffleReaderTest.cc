@@ -75,13 +75,8 @@ namespace {
 // readers probe EOS only a couple of times, so the cap never trips for them.
 class FakeInputStream final : public arrow::io::InputStream {
  public:
-  explicit FakeInputStream(
-      std::vector<uint8_t> payload = {},
-      bool errorRead = false,
-      int64_t firstReadLimit = -1)
-      : payload_(std::move(payload)),
-        errorRead_(errorRead),
-        firstReadLimit_(firstReadLimit) {}
+  explicit FakeInputStream(std::vector<uint8_t> payload = {}, bool errorRead = false, int64_t firstReadLimit = -1)
+      : payload_(std::move(payload)), errorRead_(errorRead), firstReadLimit_(firstReadLimit) {}
 
   arrow::Status Close() override {
     closed_ = true;
@@ -234,16 +229,9 @@ class VeloxShuffleReaderTest : public ::testing::Test, public test::VectorTestBa
       rawOffsets[i] = i * elementsPerArray;
       rawSizes[i] = elementsPerArray;
     }
-    auto elements = makeRowVector({makeFlatVector<int32_t>(
-        numElements, [](vector_size_t row) { return row % 1024; })});
+    auto elements = makeRowVector({makeFlatVector<int32_t>(numElements, [](vector_size_t row) { return row % 1024; })});
     auto arrayVector = std::make_shared<ArrayVector>(
-        pool(),
-        ARRAY(ROW({"a"}, {INTEGER()})),
-        BufferPtr(nullptr),
-        numArrays,
-        offsets,
-        sizes,
-        elements);
+        pool(), ARRAY(ROW({"a"}, {INTEGER()})), BufferPtr(nullptr), numArrays, offsets, sizes, elements);
     return makeRowVector({arrayVector});
   }
 
@@ -292,9 +280,8 @@ TEST_F(VeloxShuffleReaderTest, UncompressedNestedStructPageSpansWindows) {
   // the multi-window slow path.
   ASSERT_GT(payload.size(), 1 << 20);
 
-  auto deserializer = makeDeserializer(
-      std::make_shared<FakeInputStream>(std::move(payload)),
-      asRowType(rowVector->type()));
+  auto deserializer =
+      makeDeserializer(std::make_shared<FakeInputStream>(std::move(payload)), asRowType(rowVector->type()));
   auto batch = deserializer->next();
   ASSERT_NE(batch, nullptr);
   auto result = VeloxColumnarBatch::from(pool(), batch)->getRowVector();
@@ -306,16 +293,15 @@ TEST_F(VeloxShuffleReaderTest, UncompressedNestedStructPageSpansWindows) {
 // from the read window (zero copy).
 TEST_F(VeloxShuffleReaderTest, SingleWindowPageZeroCopy) {
   constexpr vector_size_t kNumRows = 200;
-  auto rowVector = makeRowVector({makeFlatVector<int32_t>(
-      kNumRows, [](vector_size_t row) { return static_cast<int32_t>(row * 7); })});
+  auto rowVector = makeRowVector(
+      {makeFlatVector<int32_t>(kNumRows, [](vector_size_t row) { return static_cast<int32_t>(row * 7); })});
 
   auto payload = serializePage(rowVector);
   // Small page: header + payload well under 1MB -> zero-copy fast path.
   ASSERT_LT(payload.size(), 1 << 20);
 
-  auto deserializer = makeDeserializer(
-      std::make_shared<FakeInputStream>(std::move(payload)),
-      asRowType(rowVector->type()));
+  auto deserializer =
+      makeDeserializer(std::make_shared<FakeInputStream>(std::move(payload)), asRowType(rowVector->type()));
   auto batch = deserializer->next();
   ASSERT_NE(batch, nullptr);
   auto result = VeloxColumnarBatch::from(pool(), batch)->getRowVector();
@@ -328,8 +314,7 @@ TEST_F(VeloxShuffleReaderTest, SingleWindowPageZeroCopy) {
 TEST_F(VeloxShuffleReaderTest, BaseByteStreamNextViewAcrossRanges) {
   uint8_t range1[] = {1, 2, 3};
   uint8_t range2[] = {4, 5, 6, 7};
-  GlutenByteInputStream stream(std::vector<ByteRange>{
-      ByteRange{range1, 3, 0}, ByteRange{range2, 4, 0}});
+  GlutenByteInputStream stream(std::vector<ByteRange>{ByteRange{range1, 3, 0}, ByteRange{range2, 4, 0}});
 
   auto view1 = stream.nextView(10);
   EXPECT_EQ(view1.size(), 3);
@@ -382,13 +367,12 @@ TEST_F(VeloxShuffleReaderTest, HeaderCrossesRefillBoundary) {
 // Checksummed page: the serde scans the payload via nextView() and seeks
 // back to verify the CRC before deserializing.
 TEST_F(VeloxShuffleReaderTest, PageDeserializesWithChecksum) {
-  auto rowVector = makeRowVector({makeFlatVector<int32_t>(
-      200, [](vector_size_t row) { return static_cast<int32_t>(row * 7); })});
+  auto rowVector =
+      makeRowVector({makeFlatVector<int32_t>(200, [](vector_size_t row) { return static_cast<int32_t>(row * 7); })});
   auto payload = serializePage(rowVector, /*withChecksum=*/true);
 
-  auto deserializer = makeDeserializer(
-      std::make_shared<FakeInputStream>(std::move(payload)),
-      asRowType(rowVector->type()));
+  auto deserializer =
+      makeDeserializer(std::make_shared<FakeInputStream>(std::move(payload)), asRowType(rowVector->type()));
   auto batch = deserializer->next();
   ASSERT_NE(batch, nullptr);
   auto result = VeloxColumnarBatch::from(pool(), batch)->getRowVector();
