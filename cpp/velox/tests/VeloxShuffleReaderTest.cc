@@ -46,7 +46,6 @@
 #include "config/GlutenConfig.h"
 #include "memory/VeloxColumnarBatch.h"
 #include "memory/VeloxMemoryManager.h"
-#include "shuffle/GlutenByteStream.h"
 #include "shuffle/VeloxShuffleReader.h"
 #include "tests/utils/TestAllocationListener.h"
 #include "tests/utils/TestStreamReader.h"
@@ -145,7 +144,7 @@ void appendLe(std::vector<uint8_t>& out, T value) {
 // Build a truncated Presto compressed page: a valid 21-byte header declaring
 // compressedSize bytes of body, but only `bodyBytes` bytes follow. The
 // reader's compressed branch calls source->readBytes(buf, compressedSize);
-// when EOS is hit mid-drain, GlutenByteInputStream::readBytes loops to
+// when EOS is hit mid-drain, RssSortShuffleReaderInputStream::readBytes loops to
 // next(true) which must VELOX_FAIL instead of spinning.
 //
 // Header layout (PrestoHeader.cpp): numRows:int32, pageCodecMarker:int8,
@@ -255,7 +254,7 @@ TEST_F(VeloxShuffleReaderTest, EosMidPageThrows) {
   auto deserializer = makeDeserializer(std::make_shared<FakeInputStream>(std::move(payload)));
 
   VELOX_ASSERT_THROW(
-      deserializer->next(), "Reading past end of VeloxRssSortShuffleReaderDeserializer::VeloxInputStream");
+      deserializer->next(), "Reading past end of RssSortShuffleReaderInputStream");
 }
 
 // A buggy upstream whose Read returns an error status. The reader must
@@ -307,26 +306,6 @@ TEST_F(VeloxShuffleReaderTest, SingleWindowPageZeroCopy) {
   auto result = VeloxColumnarBatch::from(pool(), batch)->getRowVector();
   assertEqualVectors(rowVector, result);
   ASSERT_EQ(deserializer->next(), nullptr);
-}
-
-// Base-class contract: nextView returns a view truncated at the current
-// range's end and advances to the next range; 0 size means end-of-stream.
-TEST_F(VeloxShuffleReaderTest, BaseByteStreamNextViewAcrossRanges) {
-  uint8_t range1[] = {1, 2, 3};
-  uint8_t range2[] = {4, 5, 6, 7};
-  GlutenByteInputStream stream(std::vector<ByteRange>{ByteRange{range1, 3, 0}, ByteRange{range2, 4, 0}});
-
-  auto view1 = stream.nextView(10);
-  EXPECT_EQ(view1.size(), 3);
-  EXPECT_EQ(view1.front(), 1);
-
-  auto view2 = stream.nextView(10);
-  EXPECT_EQ(view2.size(), 4);
-  EXPECT_EQ(view2.front(), 4);
-
-  // All ranges consumed: nextView reports end-of-stream without throwing.
-  auto view3 = stream.nextView(10);
-  EXPECT_EQ(view3.size(), 0);
 }
 
 // Slow path 2: the page header crosses a refill boundary. readPage() copies
