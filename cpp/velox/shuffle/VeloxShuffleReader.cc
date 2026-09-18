@@ -837,9 +837,7 @@ void VeloxSortShuffleReaderDeserializer::readNextRow() {
 // windows — seekp() fails fast instead of reading overwritten data.
 class VeloxRssSortShuffleReaderDeserializer::RssSortShuffleReaderInputStream : public facebook::velox::ByteInputStream {
  public:
-  RssSortShuffleReaderInputStream(
-      std::shared_ptr<arrow::io::InputStream> input,
-      facebook::velox::BufferPtr buffer);
+  RssSortShuffleReaderInputStream(std::shared_ptr<arrow::io::InputStream> input, facebook::velox::BufferPtr buffer);
 
   bool hasNext();
 

@@ -253,8 +253,7 @@ TEST_F(VeloxShuffleReaderTest, EosMidPageThrows) {
   auto payload = buildTruncatedCompressedPage(/*compressedSize=*/1000, /*bodyBytes=*/8);
   auto deserializer = makeDeserializer(std::make_shared<FakeInputStream>(std::move(payload)));
 
-  VELOX_ASSERT_THROW(
-      deserializer->next(), "Reading past end of RssSortShuffleReaderInputStream");
+  VELOX_ASSERT_THROW(deserializer->next(), "Reading past end of RssSortShuffleReaderInputStream");
 }
 
 // A buggy upstream whose Read returns an error status. The reader must
